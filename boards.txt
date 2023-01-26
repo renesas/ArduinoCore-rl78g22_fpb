@@ -1,0 +1,32 @@
+# See: http://code.google.com/p/arduino/wiki/Platforms
+
+menu.cpu=Processor
+
+## RL78/G22 Fast Prototyping Board Description
+g22-fpb-48p.name=RL78-G22 Fast Prototyping Board
+g22-fpb-48p.upload.tool=rl78flash
+g22-fpb-48p.upload.protocol=rl78
+g22-fpb-48p.upload.maximum_size=65536
+g22-fpb-48p.upload.maximum_data_size=4096
+g22-fpb-48p.upload.speed=115200
+
+g22-fpb-48p.bootloader.tool=
+g22-fpb-48p.bootloader.low_fuses=
+g22-fpb-48p.bootloader.high_fuses=
+g22-fpb-48p.bootloader.extended_fuses=
+g22-fpb-48p.bootloader.unlock_bits=
+g22-fpb-48p.bootloader.lock_bits=
+g22-fpb-48p.bootloader.file=
+
+g22-fpb-48p.build.mcu=rl78
+g22-fpb-48p.build.f_cpu=32000000L
+g22-fpb-48p.build.board=RL78-G22 Fast Prototyping Board
+g22-fpb-48p.build.core=rl78g22
+########## TSSR changed ##########
+g22-fpb-48p.build.ldscript=variants/linker_scripts/rl78_R7F102GGE.ld
+########## TSSR changed ##########
+g22-fpb-48p.build.variant=g22-fpb-48p
+g22-fpb-48p.build.extra_flags=-DGRPROT
+
+##############################################################
+#<EOF>

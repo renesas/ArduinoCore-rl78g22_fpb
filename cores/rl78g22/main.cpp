@@ -18,59 +18,36 @@
 */
 
 #include <Arduino.h>
-#ifdef __RL78__
 #include "utilities.h"
-#endif
-
-#if USE_SMART_CONFIGRATOR == 1
 extern "C" {
     #include "r_smc_entry.h"
 }
-#endif
 
 extern "C" {
-    #include "Config_ITL013.h"
+//    #include "Config_ITL013.h"
 }
-//#include <Wire.h>
 
-// Declared weak in Arduino.h to allow user redefinitions.
-#ifndef __RL78__
-int atexit(void (* /*func*/ )()) { return 0; }
-#endif /* __RL78__ */
-
-// Weak empty variant initialization function.
-// May be redefined by variant files.
-#ifndef __RL78__
-void initVariant() __attribute__((weak));
-void initVariant() { }
-#endif /* __RL78__ */
-
-#if defined(USBCON)
-void setupUSB() __attribute__((weak));
-void setupUSB() { }
-#endif /* defined(USBCON) */
+/* This declaration is used to force the constant in
+ * r_cg_vect_table.c to be linked to the static library (*.a). */
+extern const unsigned char Option_Bytes[];
+void * p_force_link = (void * )Option_Bytes;
 
 int main(void)
 {
 /******************************************************/
     interrupts();                /* Enable Interrupt */
-
     _readResetFlag();           /* Read causes of reset */
 
 /* Start Interval Timer */
     R_Config_ITL000_Create();    /* Create 1ms Interval Timer */
     R_Config_ITL000_Start();    /* Start 1ms Interval Timer */
     R_ITL_Start_Interrupt();    /* Start ITL Interrupt */
-    R_Config_TAU0_6_Micros_Create(); /* Create Interval Timer for microseconds */
-    R_Config_TAU0_6_Micros_Start(); /* Start Interval Timer for microseconds */
+
+    R_Config_TAU0_6_Micros_Create();
+    R_Config_TAU0_6_Micros_Start();
 
     /* Start RTC Timer */
-    R_Config_RTC_Start();    /*//KAD Start RTC Timer */
-
-// Add 20221005 never call Create function
-//    R_Config_ITL013_Create();
-//    R_Config_ITL013_SetCompareMatch(0x20, 0x0);
-//    R_Config_ITL013_Start();
+//    R_Config_RTC_Start();    /*//KAD Start RTC Timer */
 
 /* Power Off unused Peripheral */
 /* SERIAL ARRAY UNIT (SAU) */
@@ -82,7 +59,7 @@ int main(void)
     R_Config_UART1_Stop();
 #endif
 #if !defined(CSI_CHANNEL)
-    R_Config_CSI11_Stop();
+    R_Config_CSI20_Stop();
 #endif
 #if !defined(UART2_CHANNEL) || (UART2_CHANNEL == 0)
     R_SAU1_Set_Reset();
@@ -112,41 +89,27 @@ int main(void)
 
     SOE0 &= 0xf3;
     SO0 |= 0x08;
-
-// 2022/11/18 added by KAD for safety reason
+// 2022/11/18 added by KAD for safety reason for G22, These pins are not available
+#if defined(G22_FPB)
     P2_bit.no3 = 0U;
     P2_bit.no4 = 0U;
     P2_bit.no5 = 0U;
     P2_bit.no6 = 0U;
     P3_bit.no0 = 0U;
-
+#endif
 /******************************************************/
-
-#ifndef __RL78__
-    init();
-#endif
-
-#ifndef __RL78__
-    initVariant();
-#endif
-
-#if defined(USBCON)
-    USBDevice.attach();
-#endif
     
     setup();
     
     for (;;) {
         loop();
-#ifdef __RL78__
+// 2023/02/22
 //        execCyclicHandler();
-#endif
+
     }
-        
     return 0;
 }
 
-#ifdef __RL78__
 /**
  * Finish Function
  *
@@ -167,4 +130,3 @@ void exit(int) __attribute__ ((weak, alias ("abort")));
 
 #include <exception>
 
-#endif

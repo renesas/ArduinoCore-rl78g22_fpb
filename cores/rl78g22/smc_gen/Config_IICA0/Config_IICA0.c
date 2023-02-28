@@ -276,8 +276,8 @@ void R_Config_IICA0_Master_SetClock(uint32_t clock) {
     PM6 |= 0x03U;
     SMC0 = 0U;
 
-    IICWL0 = (uint8_t)(ceil((configCPU_CLOCK_HZ / 2 * coeffL) / clock));
-    IICWH0 = (uint8_t)(ceil((configCPU_CLOCK_HZ / 2 * coeffH) / clock));
+    IICWL0 = (uint8_t)(ceil((double)(configCPU_CLOCK_HZ / 2 * coeffL) / (double)clock));
+    IICWH0 = (uint8_t)(ceil((double)(configCPU_CLOCK_HZ / 2 * coeffH) / (double)clock));
 
     IICCTL01 |= _01_IICA_fCLK_HALF;
     SVA0 = _10_IICA0_MASTERADDRESS;

@@ -184,8 +184,8 @@ INT_WDTI,
  */
 //    r_Config_CSI11_interrupt,
 #if defined(CSI_CHANNEL3) | (defined(UART1_CHANNEL) & UART1_CHANNEL == 1 )
-    r_Config_CSI11_UART1_interrupt_switching,
-#else
+     r_Config_CSI11_UART1_interrupt_switching,
+ #else
     INT_SR1,
 #endif
 

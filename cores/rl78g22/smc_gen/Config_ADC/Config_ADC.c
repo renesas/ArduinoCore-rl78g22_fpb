@@ -67,10 +67,7 @@ void R_Config_ADC_Create(void)
     PM2 |= 0x04U;
     ADM0 = _00_AD_OPERMODE_SELECT | _08_AD_CONVERSION_CLOCK_32 | _00_AD_TIME_MODE_NORMAL_1;
     ADM1 = _00_AD_TRIGGER_SOFTWARE | _00_AD_CONVMODE_CONSELECT;
-// 2022/11/15
-//    ADM2 = _00_AD_NEGATIVE_VSS | _08_AD_AREA_MODE_2_3 | _00_AD_RESOLUTION_10BIT;
     ADM2 = _00_AD_NEGATIVE_VSS | _00_AD_AREA_MODE_1 | _00_AD_RESOLUTION_10BIT;
-
     ADUL = _FF_AD_ADUL_VALUE;
     ADLL = _00_AD_ADLL_VALUE;
     ADS = _02_AD_INPUT_CHANNEL_2;
@@ -167,6 +164,8 @@ void R_Config_ADC_Set_SnoozeOff(void)
 ***********************************************************************************************************************/
 void R_Config_ADC_Get_Result_10bit(uint16_t * const buffer)
 {
+// 2023/02/22 in case of G23
+//    *buffer = (uint16_t)(ADCR0 >> 6U);
     *buffer = (uint16_t)(ADCR >> 6U);
 }
 
@@ -220,7 +219,6 @@ MD_STATUS R_Config_ADC_Set_TestChannel(e_test_channel_t channel)
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-/* 1006 Nhu */
 /***********************************************************************************************************************
 * Function Name: R_Config_ADC_Set_Reference
 * Description  : This function configures the reference voltage used for analog input.
@@ -271,7 +269,6 @@ MD_STATUS R_Config_ADC_Set_Reference(uint8_t mode)
 	return status;
 }
 
-// #define ADCRH (*(volatile unsigned char *)0xF001F)
 /***********************************************************************************************************************
 * Function Name: R_Config_ADC_Get_Result_8bit
 * Description  : This function returns the high 8 bits conversion result in the buffer.
@@ -281,7 +278,7 @@ MD_STATUS R_Config_ADC_Set_Reference(uint8_t mode)
 ***********************************************************************************************************************/
 void R_Config_ADC_Get_Result_8bit(uint8_t * const buffer)
 {
-// 2022/11/01 KAD
+// 2022/11/01 KAD 2023/02/22 need confirmation
 //    *buffer = ADCR0H;
     *buffer = ADCRH;
 }
@@ -327,10 +324,7 @@ void R_Config_ADC_Set_TemperatureSensor(void)
     /* Set INTAD priority */
     ADPR1 = 1U;
     ADPR0 = 1U;
-// 2022/11/01 KAD
-//    ADM0 = _00_AD_OPERMODE_SELECT | _08_AD_CONVERSION_CLOCK_16 | _02_AD_TIME_MODE_NORMAL_2;
     ADM0 = _00_AD_OPERMODE_SELECT | _08_AD_CONVERSION_CLOCK_32 | _02_AD_TIME_MODE_NORMAL_2;
-//    ADM1 = _00_AD_TRIGGER_SOFTWARE | _00_AD_FCLK_BETWEEN_4_32 | _20_AD_CONVMODE_ONESELECT;
     ADM1 = _00_AD_TRIGGER_SOFTWARE  | _20_AD_CONVMODE_ONESELECT;
     ADM2 = _00_AD_NEGATIVE_VSS | _00_AD_AREA_MODE_1 | _00_AD_RESOLUTION_10BIT;
     ADUL = _FF_AD_ADUL_VALUE;
@@ -352,8 +346,6 @@ void R_Config_ADC_Set_TemperatureSensor(void)
 
 }
 
-//
-
 void R_Config_ADC_Set_InternalReferenceVoltage(void)
 {
     ADCEN = 1U;    /* supply AD clock */
@@ -362,9 +354,7 @@ void R_Config_ADC_Set_InternalReferenceVoltage(void)
     /* Set INTAD priority */
     ADPR1 = 1U;
     ADPR0 = 1U;
-//    ADM0 = _00_AD_OPERMODE_SELECT | _08_AD_CONVERSION_CLOCK_16 | _02_AD_TIME_MODE_NORMAL_2;
     ADM0 = _00_AD_OPERMODE_SELECT | _10_AD_CONVERSION_CLOCK_16 | _02_AD_TIME_MODE_NORMAL_2;
-//    ADM1 = _00_AD_TRIGGER_SOFTWARE | _00_AD_FCLK_BETWEEN_4_32 | _20_AD_CONVMODE_ONESELECT;
     ADM1 = _00_AD_TRIGGER_SOFTWARE |  _20_AD_CONVMODE_ONESELECT;
     ADM2 = _00_AD_NEGATIVE_VSS | _00_AD_AREA_MODE_1 | _00_AD_RESOLUTION_10BIT;
     ADUL = _FF_AD_ADUL_VALUE;
@@ -383,10 +373,5 @@ void R_Config_ADC_Set_InternalReferenceVoltage(void)
     {
         NOP();
     }
-
 }
-
-
-/* 1006 Nhu add */
-
 /* End user code. Do not edit comment generated here */

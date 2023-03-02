@@ -225,7 +225,9 @@ void pinMode(pin_size_t pin, PinMode u8Mode)
 			break;
 		case OUTPUT:
 		case OUTPUT_OPENDRAIN:
-            if((pin==27) || (pin==28) || (pin==41))
+// 2023/03/02
+//          if((pin==27) || (pin==28) || (pin==41))
+			if(CHECK_OUTPUT_INHIBIT_RL78(pin))
             {
                 break;
             }

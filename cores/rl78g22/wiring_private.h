@@ -33,6 +33,7 @@
 #include <stdarg.h>
 #include "Arduino.h"
 #include "utilities.h"
+#include "wiring_variant.h"
 
 #ifdef __cplusplus
 extern "C"{

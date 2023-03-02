@@ -58,9 +58,10 @@ int main(void)
 #if !defined(UART1_CHANNEL) || UART1_CHANNEL == 0
     R_Config_UART1_Stop();
 #endif
-#if !defined(CSI_CHANNEL)
-    R_Config_CSI20_Stop();
-#endif
+// 2023/03/02 temporary removal by KAD
+// #if !defined(CSI_CHANNEL)
+//    R_Config_CSI20_Stop();
+// #endif
 #if !defined(UART2_CHANNEL) || (UART2_CHANNEL == 0)
     R_SAU1_Set_Reset();
     R_SAU1_Set_PowerOff();
@@ -72,8 +73,9 @@ int main(void)
     R_IICA0_Set_PowerOff();
 #endif
 #if (IIC_CHANNEL1!=1)
-    R_IICA1_Set_Reset();
-    R_IICA1_Set_PowerOff();
+// 2023/02/28 comment out by KAD
+//    R_IICA1_Set_Reset();
+//    R_IICA1_Set_PowerOff();
 #endif
 
 /* RTC */

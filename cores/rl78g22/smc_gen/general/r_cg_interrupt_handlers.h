@@ -140,7 +140,7 @@ void INT_SRE1(void) __attribute__ ((interrupt));
 /*
  * INT_IICA0 (0x2A)
  */
-void INT_IICA0(void) __attribute__ ((interrupt));
+// void INT_IICA0(void) __attribute__ ((interrupt));
 // 2022/11/07 added by KAD
 void r_Config_IICA0_interrupt(void) __attribute__ ((interrupt));
 /*

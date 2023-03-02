@@ -14,15 +14,15 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2022 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_IICA0.h
-* Version      : 1.0.0
-* Device(s)    : R7F100GLGxFB
-* Description  : This file implements device driver for Config_IICA0.
-* Creation Date: 2021-05-14
+* File Name        : Config_IICA0.h
+* Component Version: 1.4.0
+* Device(s)        : R7F102GGExFB
+* Description      : This file implements device driver for Config_IICA0.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
 #ifndef CFG_Config_IICA0_H
@@ -52,16 +52,14 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
-void R_Config_IICA0_Create(void);
-void R_Config_IICA0_Stop(void);
-void R_Config_IICA0_StopCondition(void);
-MD_STATUS R_Config_IICA0_Master_Send(uint8_t adr, uint8_t * const tx_buf, uint16_t tx_num, uint8_t wait);
-MD_STATUS R_Config_IICA0_Master_Receive(uint8_t adr, uint8_t * const rx_buf, uint16_t rx_num, uint8_t wait);
-void R_Config_IICA0_Create_UserInit(void);
+void R_Config_IICA0_Create (void);
+void R_Config_IICA0_Stop (void);
+void R_Config_IICA0_StopCondition (void);
+MD_STATUS R_Config_IICA0_Master_Send (uint8_t adr, uint8_t * const tx_buf, uint16_t tx_num, uint8_t wait);
+MD_STATUS R_Config_IICA0_Master_Receive (uint8_t adr, uint8_t * const rx_buf, uint16_t rx_num, uint8_t wait);
+void R_Config_IICA0_Create_UserInit (void);
 /* Start user code for function. Do not edit comment generated here */
-// 2022/11/07 added by KAD
-//void r_Config_IICA0_interrupt(void);
 void R_Config_IICA0_Master_SetClock(uint32_t clock);
-
 /* End user code. Do not edit comment generated here */
 #endif
+

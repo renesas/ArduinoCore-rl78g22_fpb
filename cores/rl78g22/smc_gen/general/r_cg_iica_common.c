@@ -35,6 +35,7 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
+#include "r_cg_iica_common.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -53,7 +54,7 @@ Global variables and functions
 ***********************************************************************************************************************/
 void R_IICA0_Set_PowerOn(void)
 {
-    IICA0EN = 1;    /* start IICA0 clock */
+    IICA0EN = 1U;    /* start IICA0 clock */
 }
 
 /***********************************************************************************************************************
@@ -64,7 +65,7 @@ void R_IICA0_Set_PowerOn(void)
 ***********************************************************************************************************************/
 void R_IICA0_Set_PowerOff(void)
 {
-    IICA0EN = 0;    /* stop IICA0 clock */
+    IICA0EN = 0U;    /* stop IICA0 clock */
 }
 
 /***********************************************************************************************************************

@@ -202,7 +202,6 @@ INT_WDTI,
 /*
  * INT_IICA0 (0x2A)
  */
-//    INT_IICA0,
     r_Config_IICA0_interrupt,
 
 /*

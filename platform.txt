@@ -173,7 +173,7 @@ recipe.size.regex=^(?:\.vec |\.vects |\.callt0 |\.option_byte |\.security_id |\.
 recipe.size.regex.data=^(?:\.data |\.dataf |\.sdata |\.saddr |\.sbss |\.bss |\.bssf |\.stack )\s+([0-9]+).*
 
 # --------------------
-# SAM3 Uploader tools
+# RL78 Uploader tools
 # -------------------
 
 tools.rl78flash.cmd=rl78flash_g2x

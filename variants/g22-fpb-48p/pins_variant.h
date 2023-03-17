@@ -42,7 +42,7 @@
 #define UART2_CHANNEL       2       // UART2(Serial2)
 
 /* SPI(CSI) Definition */
-#define USE_CSI      (1) // Set to '1' when Use SPI Hardware.
+#define USE_CSI      (0) // Set to '1' when Use SPI Hardware.
 
 #if defined(USE_CSI) && USE_CSI
 
@@ -61,7 +61,17 @@
 #define IIC_CHANNEL0 (0)
 #define IIC_CHANNEL1 (0)
 
-#define CHECK_OUTPUT_INHIBIT_RL78(p) ((p) == 27 || (p) == 28 || (p) == 41)
+
+#define CHECK_PINMODE_INHIBIT_RL78(p) (\
+    (p) == 27 || /* P21(AVREFM) */\
+    (p) == 35    /* P20(AVREFP) */)
+#define CHECK_OUTPUT_INHIBIT_RL78(p) (\
+	(p) == 8 ||  /* P30(TSCAP) */\
+	(p) == 26 || /* P22(Touch Slider) */\
+	(p) == A2 || /* P26(Touch Slider) */\
+	(p) == A3 || /* P25(Touch Slider) */\
+	(p) == A4 || /* P24(Touch Slider) */\
+	(p) == A5    /* P23(Touch Slider) */)
 
 // 2023/03/02 end of copy from Arduino.h
 

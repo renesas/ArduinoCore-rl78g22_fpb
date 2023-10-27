@@ -93,7 +93,6 @@ SECTIONS
 		/*The rodata section is copied into the MIRROR area, that is why we check if the start and end addresses for rodata are less then  _rodata_limit*/
 		ASSERT((SIZEOF (.rodata) == 0) || (__rodata < __rodata_limit), "Error: rodata section start address is too large. Move the text section after the rodata section to ensure that correct data is added to the MIRROR area.");
 		ASSERT((SIZEOF (.rodata) == 0) || (__erodata <= __rodata_limit), "Error: rodata section size exceeds length of the MIRROR area.");
-
 	}>ROM
 
 

@@ -34,14 +34,15 @@ Includes
 #include "r_cg_macrodriver.h"
 #include "Config_ADC.h"
 #include "Config_IICA0.h"
+#include "Config_INTC.h"
 #include "Config_RTC.h"
 #include "Config_ITL000.h"
 #include "Config_ITL001.h"
 #include "Config_ITL012.h"
+#include "Config_ITL013.h"
 #include "Config_UART0.h"
 #include "Config_UART1.h"
 #include "Config_UART2.h"
-// #include "Config_CSI11.h"
 #include "Config_CSI20.h"
 #include "r_cg_sau_common.h"
 #include "r_cg_tau_common.h"
@@ -67,31 +68,12 @@ Typedef definitions
 Global functions
 ***********************************************************************************************************************/
 /* Start user code for function. Do not edit comment generated here */
-/* 1006 Nhu add */
-#include "Config_TAU0_01_PWM.h"
-#include "Config_TAU0_23_PWM.h"
-#include "Config_TAU0_67_PWM.h"
-/* 1006 Nhu add */
-
-/* 1108 Ueeda add */
-#include "Config_INTC.h"
-/* 1108 Ueeda add */
-
-/* 1112 nhu add */
+#include "Config_TAU0_0_PWM.h"
 #include "Config_TAU0_1_Square_Wave.h"
 #include "Config_TAU0_2_Square_Wave.h"
 #include "Config_TAU0_3_Square_Wave.h"
-#include "Config_TAU0_7_Square_Wave.h"
-
-#include "Config_TAU0_0_Measure_Signal.h"
-#include "Config_TAU0_1_Measure_Signal.h"
-#include "Config_TAU0_2_Measure_Signal.h"
-#include "Config_TAU0_3_Measure_Signal.h"
-#include "Config_TAU0_7_Measure_Signal.h"
-
 #include "Config_TAU0_6_Micros.h"
-
-/* 1112 nhu add */
+#include "Config_TAU0_7_Square_Wave.h"
 /* End user code. Do not edit comment generated here */
 #endif
 

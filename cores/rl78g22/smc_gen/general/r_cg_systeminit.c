@@ -42,9 +42,7 @@ Includes
 #include "r_cg_tau_common.h"
 #include "r_cg_itl_common.h"
 /* Start user code for include. Do not edit comment generated here */
-/* 1112 Ueeda add */
 #include "Config_INTC.h"
-/* 1112 Ueeda add */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 

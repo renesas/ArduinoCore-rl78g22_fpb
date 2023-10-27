@@ -14,15 +14,15 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_ITL000.c
-* Version      : 1.1.0
-* Device(s)    : R7F102GGExFB
-* Description  : This file implements device driver for Config_ITL000.
-* Creation Date: 
+* File Name        : Config_ITL000.c
+* Component Version: 1.4.0
+* Device(s)        : R7F102GGExFB
+* Description      : This file implements device driver for Config_ITL000.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -130,7 +130,7 @@ void R_Config_ITL000_SetCompareMatch_For_MainClock(void)
 
 void R_Config_ITL000_SetCompareMatch(void)
 {
-	ITLEN00 = 0U;
+//	ITLEN00 = 0U;
     ITLCSEL0 &= _F8_ITL_CLOCK_FITL0_CLEAR;
     ITLCSEL0 |= _04_ITL_CLOCK_FITL0_FSXP;
     ITLFDIV00 &= _F8_ITL_ITL000_FITL0_CLEAR;

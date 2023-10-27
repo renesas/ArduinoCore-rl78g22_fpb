@@ -44,7 +44,7 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
-extern volatile unsigned long g_timer06_overflow_count;
+extern volatile unsigned long g_micros_timer_ovfl_count;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -68,7 +68,7 @@ void R_Config_TAU0_6_Micros_Create_UserInit(void)
 void r_Config_TAU0_6_Micros_interrupt(void)
 {
     /* Start user code for r_Config_TAU0_6_Micros_interrupt. Do not edit comment generated here */
-    g_timer06_overflow_count++;
+    g_micros_timer_ovfl_count++;
     /* End user code. Do not edit comment generated here */
 }
 

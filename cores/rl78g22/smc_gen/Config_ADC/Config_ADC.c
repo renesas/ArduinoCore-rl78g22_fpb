@@ -164,8 +164,6 @@ void R_Config_ADC_Set_SnoozeOff(void)
 ***********************************************************************************************************************/
 void R_Config_ADC_Get_Result_10bit(uint16_t * const buffer)
 {
-// 2023/02/22 in case of G23
-//    *buffer = (uint16_t)(ADCR0 >> 6U);
     *buffer = (uint16_t)(ADCR >> 6U);
 }
 
@@ -278,8 +276,6 @@ MD_STATUS R_Config_ADC_Set_Reference(uint8_t mode)
 ***********************************************************************************************************************/
 void R_Config_ADC_Get_Result_8bit(uint8_t * const buffer)
 {
-// 2022/11/01 KAD 2023/02/22 need confirmation
-//    *buffer = ADCR0H;
     *buffer = ADCRH;
 }
 
@@ -315,7 +311,7 @@ void R_Config_ADC_Set_ComparisonLimit(uint8_t upper, uint8_t lower)
 }
 
 
-//���x�Z���T�o�͂̃��W�X�^�̐ݒ�
+// 温度センサ出力のレジスタの設定
 void R_Config_ADC_Set_TemperatureSensor(void)
 {
     ADCEN = 1U;    /* supply AD clock */

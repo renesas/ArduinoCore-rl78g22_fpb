@@ -14,15 +14,15 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_sau.h
-* Version      : 1.0.0
-* Device(s)    : R7F102GGExFB
-* Description  : General header file for SAU peripheral.
-* Creation Date: 
+* File Name        : r_cg_sau.h
+* Version          : 1.0.3
+* Device(s)        : R7F102GGExFB
+* Description      : General header file for SAU peripheral.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
 #ifndef SAU_H
@@ -329,9 +329,6 @@ Typedef definitions
 Global functions
 ***********************************************************************************************************************/
 /* Start user code for function. Do not edit comment generated here */
-// 20220928 temporary removal
-// #warning FIXME: Instead of missing `r_cg_serial_csi.h`, define macros for `SPI` here.
-
 #define _0000_SPI_STATUS_CLEAR         (0x0000U)
 #define _8000_SPI_STATUS_SENDEND       (0x8000U)
 #define _4000_SPI_STATUS_RECEIVEEND    (0x4000U)

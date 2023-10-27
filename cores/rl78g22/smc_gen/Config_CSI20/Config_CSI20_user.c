@@ -14,12 +14,12 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2021, 2022 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 * File Name        : Config_CSI20_user.c
-* Component Version: 1.3.0
+* Component Version: 1.4.0
 * Device(s)        : R7F102GGExFB
 * Description      : This file implements device driver for Config_CSI20.
 * Creation Date    : 
@@ -47,6 +47,7 @@ extern volatile uint8_t * gp_csi20_tx_address;    /* csi20 send buffer address *
 extern volatile uint16_t g_csi20_tx_count;        /* csi20 send data count */
 extern volatile uint8_t * gp_csi20_rx_address;    /* csi20 receive buffer address */
 /* Start user code for global. Do not edit comment generated here */
+extern volatile uint16_t g_csi20_status_flag;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -70,6 +71,7 @@ void R_Config_CSI20_Create_UserInit(void)
 static void r_Config_CSI20_callback_sendend(void)
 {
     /* Start user code for r_Config_CSI20_callback_sendend. Do not edit comment generated here */
+    g_csi20_status_flag |= _8000_SPI_STATUS_SENDEND;
     /* End user code. Do not edit comment generated here */
 }
 
@@ -82,6 +84,7 @@ static void r_Config_CSI20_callback_sendend(void)
 static void r_Config_CSI20_callback_receiveend(void)
 {
     /* Start user code for r_Config_CSI20_callback_receiveend. Do not edit comment generated here */
+    g_csi20_status_flag |= _4000_SPI_STATUS_RECEIVEEND;
     /* End user code. Do not edit comment generated here */
 }
 
@@ -95,6 +98,7 @@ static void r_Config_CSI20_callback_receiveend(void)
 static void r_Config_CSI20_callback_error(uint8_t err_type)
 {
     /* Start user code for r_Config_CSI20_callback_error. Do not edit comment generated here */
+    g_csi20_status_flag = (g_csi20_status_flag & ~_00FF_SPI_STATUS_ERROR_MASK) | err_type;
     /* End user code. Do not edit comment generated here */
 }
 
@@ -170,6 +174,6 @@ void r_Config_CSI20_interrupt(void)
  * Return Value : -
  *********************************************************************************************************************/
 void R_Config_CSI20_ClearStatus(void) {
-//    g_csi11_status_flag = _0000_SPI_STATUS_CLEAR;
+    g_csi20_status_flag = _0000_SPI_STATUS_CLEAR;
 }
 /* End user code. Do not edit comment generated here */

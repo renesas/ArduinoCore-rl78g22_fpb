@@ -63,7 +63,6 @@ INT_WDTI,
  */
 //    INT_P0,
     r_Config_INTC_intp0_interrupt,
-    /* 1112 Ueeda add */
 /*
  * INT_P1 (0xA)
  */
@@ -87,7 +86,6 @@ INT_WDTI,
  */
 //    INT_P4,
     r_Config_INTC_intp4_interrupt,
-    /* 1112 Ueeda add */
 
 /*
  * INT_P5 (0x12)
@@ -99,15 +97,10 @@ INT_WDTI,
  * INT_CSI20/INT_IIC20/INT_ST2 (0x14)
  */
 //    INT_ST2,
-#if defined(CSI_CHANNEL4)
-// 2022/11/08 added by KAD (dummy data)
-    INT_ST2,
+#if defined(CSI_CHANNEL4) | (UART2_CHANNEL==2)
+    r_Config_CSI20_UART2_interrupt_send,
 #else
-    #if (UART2_CHANNEL==2)
-        r_Config_UART2_interrupt_send,
-    #else
-        INT_ST2,
-    #endif
+    INT_ST2,
 #endif
 
 /*
@@ -115,7 +108,6 @@ INT_WDTI,
  */
 //    INT_SR2,
 #if defined(CSI_CHANNEL5)
-// 2022/11/08 added by KAD (dummy data)
     INT_SR2,
 #else
     #if (UART2_CHANNEL==2)
@@ -156,8 +148,7 @@ INT_WDTI,
 /*
  * INT_TM00 (0x20)
  */
-//    r_Config_TAU0_0_channel0_interrupt,
-    r_Config_TAU0_0_Measure_Signal_interrupt,
+	r_Config_TAU0_0_PWM_interrupt,
 
 /*
  * INT_SRE0/INT_TM01H (0x22)
@@ -221,25 +212,17 @@ INT_WDTI,
 /*
  * INT_TM01 (0x2E)
  */
-//    r_Config_TAU0_0_channel1_interrupt,
-    r_Config_TAU0_1_Measure_Signal_interrupt,
-/* 1118 nhu add */
+    INT_TM01,
 
 /*
  * INT_TM02 (0x30)
  */
-//    r_Config_TAU0_2_channel2_interrupt,
-/* 1118 nhu add */
-    r_Config_TAU0_2_Measure_Signal_interrupt,
-/* 1118 nhu add */
+	INT_TM02,
 
 /*
  * INT_TM03 (0x32)
  */
-//    r_Config_TAU0_2_channel3_interrupt,
-/* 1118 nhu add */
-    r_Config_TAU0_3_Measure_Signal_interrupt,
-/* 1118 nhu add */
+	INT_TM03,
 
 /*
  * INT_AD (0x34)
@@ -283,40 +266,23 @@ INT_WDTI,
 /*
  * INT_TM04 (0x42)
  */
-//    r_Config_TAU0_4_channel4_interrupt,
-/* 1118 nhu add */
-//    r_Config_TAU0_4_Measure_Signal_interrupt,
-    (void*)0xFFFF,
-/* 1118 nhu add */
+	INT_TM04,
+
 
 /*
  * INT_TM05 (0x44)
  */
- //   r_Config_TAU0_4_channel5_interrupt,
-/* 1118 nhu add */
-//    r_Config_TAU0_5_Measure_Signal_interrupt,
-    (void*)0xFFFF,
-/* 1118 nhu add */
+	INT_TM05,
 
 /*
  * INT_TM06 (0x46)
  */
-//    r_Config_TAU0_6_channel6_interrupt,
-/* 1118 nhu add */
-//    r_Config_TAU0_6_Measure_Signal_interrupt,
 	r_Config_TAU0_6_Micros_interrupt,
-/* 1118 nhu add */
 
 /*
  * INT_TM07 (0x48)
  */
-//    r_Config_TAU0_6_channel7_interrupt,
-/* 1118 nhu add */
-    r_Config_TAU0_7_Measure_Signal_interrupt,
-/* 1118 nhu add */
-// 20221006 KAD
-//    r_Config_TAU0_7_MSTimer2_interrupt,
-
+	INT_TM07,
 
 /*
  * INT_P6 (0x4A)

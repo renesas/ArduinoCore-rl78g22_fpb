@@ -29,20 +29,21 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-// 2023/03/02 moved from Arduino.h
-// Arduino.h should not be board specific
 #ifndef configCPU_CLOCK_HZ
 #define configCPU_CLOCK_HZ 					(32000000)	//!< CPU�̓�����g���iRTOS���g�p���ɒ�`�j
 #endif
 
 #define F_CPU (32 * 1000 * 1000L)
 
+// G22:1 , G23 :2 , G16:1, G24:3
+#define MICROS_TIMER_DIVIDE_FACTOR ((uint32_t)1)
+
 #define UART_CHANNEL 		0		// UART0(Serial0)
 #define UART1_CHANNEL       1       // UART1(Serial1)
 #define UART2_CHANNEL       2       // UART2(Serial2)
 
 /* SPI(CSI) Definition */
-#define USE_CSI      (0) // Set to '1' when Use SPI Hardware.
+#define USE_CSI      (1) // Set to '1' when Use SPI Hardware.
 
 #if defined(USE_CSI) && USE_CSI
 
@@ -50,7 +51,7 @@
 // #define CSI_CHANNEL1 (1) // USE CSI01 for SPI
 // #define CSI_CHANNEL2 (2) // USE CSI10 for SPI
 // #define CSI_CHANNEL3 (3) // USE CSI11 for SPI
- #define CSI_CHANNEL4 (4) // USE CSI20 for SPI
+#define CSI_CHANNEL4 (4) // USE CSI20 for SPI
 // #define CSI_CHANNEL5 (5) // USE CSI21 for SPI
 // #define CSI_CHANNEL6 (6) // USE CSI30 for SPI
 // #define CSI_CHANNEL7 (7) // USE CSI31 for SPI
@@ -102,7 +103,6 @@ extern "C"
 
 // tone_func
 
-#define PULSE_IN_CH_NUM			(4)
 int8_t get_tone_channel(uint8_t tone_num);
 
 typedef struct {
@@ -643,7 +643,7 @@ extern const uint8_t A9;
 #define PWM_PIN_23			0xE2	// Software PWM2
 
 #define SWPWM_PIN			0xE0
-#define PWM_PIN_3			3		// TO4
+#define PWM_PIN_3			3		// TO3
 #define PWM_PIN_6			6		// TO7
 #define PWM_PIN_12			12		// TO3
 #define PWM_PIN_25			25		// TO6

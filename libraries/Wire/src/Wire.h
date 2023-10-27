@@ -33,8 +33,6 @@
 
 namespace arduino {
 
-// 2023/02/15
-//class TwoWire : public Stream
 class TwoWire : public HardwareI2C
 {
   private:
@@ -73,10 +71,13 @@ class TwoWire : public HardwareI2C
 
     void setClock(uint32_t) override;
     void beginTransmission(uint8_t) override;
+//    void beginTransmission(int);
     uint8_t endTransmission(void) override;
     uint8_t endTransmission(bool) override;
     size_t requestFrom(uint8_t, size_t) override;
     size_t requestFrom(uint8_t, size_t, bool) override;
+//    size_t requestFrom(int, int);
+//    size_t requestFrom(int, int, int);
     virtual size_t write(uint8_t) override;
     virtual size_t write(const uint8_t *, size_t) override;
     virtual int available(void) override;

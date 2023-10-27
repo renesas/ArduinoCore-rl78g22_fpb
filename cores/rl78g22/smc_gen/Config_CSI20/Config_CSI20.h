@@ -14,12 +14,12 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2021, 2022 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 * File Name        : Config_CSI20.h
-* Component Version: 1.3.0
+* Component Version: 1.4.0
 * Device(s)        : R7F102GGExFB
 * Description      : This file implements device driver for Config_CSI20.
 * Creation Date    : 
@@ -40,7 +40,7 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#define _CE00_SAU1_CH0_BAUDRATE_DIVISOR    (0xCE00U)    /* transfer clock set by dividing the operating clock */
+#define _0600_SAU1_CH0_BAUDRATE_DIVISOR    (0x0600U)    /* transfer clock set by dividing the operating clock */
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -62,6 +62,6 @@ void R_Config_CSI20_SetDataMode(uint8_t dataMode);
 void R_Config_CSI20_SetClockDivider(uint16_t clockDiv);
 void R_Config_CSI20_SetClock(uint32_t clock);
 //
-void r_Config_CSI20_interrupt(void);
+// void r_Config_CSI20_interrupt(void);
 /* End user code. Do not edit comment generated here */
 #endif

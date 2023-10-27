@@ -24,7 +24,7 @@ extern "C" {
 }
 
 extern "C" {
-//    #include "Config_ITL013.h"
+
 }
 
 /* This declaration is used to force the constant in
@@ -48,6 +48,8 @@ int main(void)
 
     /* Start RTC Timer */
 //    R_Config_RTC_Start();    /*//KAD Start RTC Timer */
+    R_Config_ITL013_SetCompareMatch(0x20, 0x0);
+    R_Config_ITL013_Start();
 
 /* Power Off unused Peripheral */
 /* SERIAL ARRAY UNIT (SAU) */
@@ -58,10 +60,7 @@ int main(void)
 #if !defined(UART1_CHANNEL) || UART1_CHANNEL == 0
     R_Config_UART1_Stop();
 #endif
-// 2023/03/02 temporary removal by KAD
-// #if !defined(CSI_CHANNEL)
-//    R_Config_CSI20_Stop();
-// #endif
+
 #if !defined(UART2_CHANNEL) || (UART2_CHANNEL == 0)
     R_SAU1_Set_Reset();
     R_SAU1_Set_PowerOff();
@@ -72,12 +71,6 @@ int main(void)
     R_IICA0_Set_Reset();
     R_IICA0_Set_PowerOff();
 #endif
-#if (IIC_CHANNEL1!=1)
-// 2023/02/28 comment out by KAD
-//    R_IICA1_Set_Reset();
-//    R_IICA1_Set_PowerOff();
-#endif
-
 /* RTC */
 #if !defined(RTC_ON) | (RTC_ON!=0)
     R_RTC_Set_PowerOff();
@@ -91,7 +84,7 @@ int main(void)
 
     SOE0 &= 0xf3;
     SO0 |= 0x08;
-// 2022/11/18 added by KAD for safety reason for G22, These pins are not available
+// added for safety reason for G22, These pins are not available
 #if defined(G22_FPB)
     /* P26,P25,P24,P23,P22 */
     PMCA2 &= 0x83;  /* 0 : Use Digital IO */
@@ -111,9 +104,6 @@ int main(void)
     
     for (;;) {
         loop();
-// 2023/02/22
-//        execCyclicHandler();
-
     }
     return 0;
 }

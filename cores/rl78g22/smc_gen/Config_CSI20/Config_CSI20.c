@@ -14,12 +14,12 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2021, 2022 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 * File Name        : Config_CSI20.c
-* Component Version: 1.3.0
+* Component Version: 1.4.0
 * Device(s)        : R7F102GGExFB
 * Description      : This file implements device driver for Config_CSI20.
 * Creation Date    : 
@@ -47,6 +47,8 @@ volatile uint8_t * gp_csi20_tx_address;    /* csi20 send buffer address */
 volatile uint16_t g_csi20_tx_count;        /* csi20 send data count */
 volatile uint8_t * gp_csi20_rx_address;    /* csi20 receive buffer address */
 /* Start user code for global. Do not edit comment generated here */
+volatile uint16_t g_csi20_status_flag;
+uint32_t R_BSP_GetFclkFreqHz(void);
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -70,10 +72,12 @@ void R_Config_CSI20_Create(void)
     SIR10 = _0002_SAU_SIRMN_PECTMN | _0001_SAU_SIRMN_OVCTMN;    /* clear error flag */
     SMR10 = _0020_SAU_SMRMN_INITIALVALUE | _0000_SAU_CLOCK_SELECT_CK00 | _0000_SAU_CLOCK_MODE_CKS | 
             _0000_SAU_TRIGGER_SOFTWARE | _0000_SAU_MODE_CSI | _0000_SAU_TRANSFER_END;
-    SCR10 = _0004_SAU_SCRMN_INITIALVALUE | _C000_SAU_RECEPTION_TRANSMISSION | _0000_SAU_TIMING_1 | _0080_SAU_LSB | 
+    SCR10 = _0004_SAU_SCRMN_INITIALVALUE | _C000_SAU_RECEPTION_TRANSMISSION | _3000_SAU_TIMING_4 | _0000_SAU_MSB |
             _0003_SAU_LENGTH_8;
-    SDR10 = _CE00_SAU1_CH0_BAUDRATE_DIVISOR;
-    SO1 |= _0100_SAU_CH0_CLOCK_OUTPUT_1;    /* CSI20 clock initial level */
+    SDR10 = _0600_SAU1_CH0_BAUDRATE_DIVISOR;
+//    SO1 |= _0100_SAU_CH0_CLOCK_OUTPUT_1;    /* CSI20 clock initial level */
+    SO1 &= (uint16_t)~_0100_SAU_CH0_CLOCK_OUTPUT_1;    /* CSI20 clock initial level */
+
     SO1 &= (uint16_t)~_0001_SAU_CH0_DATA_OUTPUT_1;    /* CSI20 SO initial level */
     SOE1 |= _0001_SAU_CH0_OUTPUT_ENABLE;    /* enable CSI20 output */
     /* Set SI20 pin */
@@ -99,8 +103,8 @@ void R_Config_CSI20_Create(void)
 ***********************************************************************************************************************/
 void R_Config_CSI20_Start(void)
 {
-    SO1 |= _0100_SAU_CH0_CLOCK_OUTPUT_1;    /* CSI20 clock initial level */
-    SO1 &= (uint16_t)~_0001_SAU_CH0_DATA_OUTPUT_1;    /* CSI20 SO initial level */
+//    SO1 |= _0100_SAU_CH0_CLOCK_OUTPUT_1;    /* CSI20 clock initial level */
+//    SO1 &= (uint16_t)~_0001_SAU_CH0_DATA_OUTPUT_1;    /* CSI20 SO initial level */
     SOE1 |= _0001_SAU_CH0_OUTPUT_ENABLE;    /* enable CSI20 output */
     SS1 |= _0001_SAU_CH0_START_TRG_ON;    /* enable CSI20 */
     CSIIF20 = 0U;    /* clear INTCSI20 interrupt flag */
@@ -175,7 +179,7 @@ MD_STATUS R_Config_CSI20_Send_Receive(uint8_t * const tx_buf, uint16_t tx_num, u
  *              :   MSBFIRST
  *********************************************************************************************************************/
 uint8_t R_Config_CSI20_GetBitOrder(void) {
-    return (SCR03 & (uint16_t)_0080_SAU_LSB) == _0080_SAU_LSB
+    return (SCR10 & (uint16_t)_0080_SAU_LSB) == _0080_SAU_LSB
                 ? LSBFIRST : MSBFIRST;
 }
 
@@ -188,18 +192,18 @@ uint8_t R_Config_CSI20_GetBitOrder(void) {
  * Return Value : -
  *********************************************************************************************************************/
 void R_Config_CSI20_SetBitOrder(uint8_t bitOrder) {
-    ST0     |= _0008_SAU_CH3_STOP_TRG_ON;                       /* Stop channel 3 */
-    SOE0    &= (uint16_t)~_0008_SAU_CH3_OUTPUT_ENABLE;          /* disable CSI20 output */
+    ST1     |= _0001_SAU_CH0_STOP_TRG_ON;                       /* Stop unit 1, channel 0 */
+    SOE1    &= (uint16_t)~_0001_SAU_CH0_OUTPUT_ENABLE;          /* disable CSI20 output */
 
-    SCR03    = (SCR03 & (uint16_t)~_0080_SAU_LSB)
+    SCR10    = (SCR10 & (uint16_t)~_0080_SAU_LSB)
              | (bitOrder == LSBFIRST ? _0080_SAU_LSB : _0000_SAU_MSB);
 
-    CSIIF11  = 0U;                                              /* clear INTCSI20 interrupt flag */
+    CSIIF20  = 0U;                                              /* clear INTCSI20 interrupt flag */
 
-    SO0     |= _0800_SAU_CH3_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
-    SO0     &= (uint16_t)~_0008_SAU_CH3_DATA_OUTPUT_1;          /* CSI20 SO initial level */
-    SOE0    |= _0008_SAU_CH3_OUTPUT_ENABLE;                     /* enable CSI20 output */
-    SS0     |= _0008_SAU_CH3_START_TRG_ON;                      /* enable CSI20 */
+//    SO1     |= _0100_SAU_CH0_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
+//    SO1     &= (uint16_t)~_0001_SAU_CH0_DATA_OUTPUT_1;          /* CSI20 SO initial level */
+    SOE1    |= _0001_SAU_CH0_OUTPUT_ENABLE;                     /* enable CSI20 output */
+    SS1     |= _0001_SAU_CH0_START_TRG_ON;                      /* enable CSI20 */
 }
 
 /**********************************************************************************************************************
@@ -214,26 +218,38 @@ void R_Config_CSI20_SetBitOrder(uint8_t bitOrder) {
  *********************************************************************************************************************/
 void R_Config_CSI20_SetDataMode(uint8_t dataMode) {
 
-    ST0     |= _0008_SAU_CH3_STOP_TRG_ON;                       /* Stop channel 3 */
-    SOE0    &= (uint16_t)~_0008_SAU_CH3_OUTPUT_ENABLE;          /* disable CSI20 output */
+    ST1     |= _0001_SAU_CH0_STOP_TRG_ON;                       /* Stop unit 1, channel 0 */
+    SOE1    &= (uint16_t)~_0001_SAU_CH0_OUTPUT_ENABLE;          /* disable CSI11 output */
     /*
      * This mapping is obeying the base code.
      * Fix the `SPI_MODEx` macros together.
      */
     switch (dataMode) {
-    case SPI_MODE3:     SCR03 = (SCR03 & (uint16_t)~SPI_MODE_MASK) | _0000_SAU_TIMING_1; break;
-    case SPI_MODE2:     SCR03 = (SCR03 & (uint16_t)~SPI_MODE_MASK) | _2000_SAU_TIMING_3; break;
-    case SPI_MODE1:     SCR03 = (SCR03 & (uint16_t)~SPI_MODE_MASK) | _1000_SAU_TIMING_2; break;
+    case SPI_MODE3:
+        SCR10 = (SCR10 & (uint16_t)~SPI_MODE_MASK) | _0000_SAU_TIMING_1;
+        SO1     |= _0100_SAU_CH0_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
+        break;
+    case SPI_MODE2:
+        SCR10 = (SCR10 & (uint16_t)~SPI_MODE_MASK) | _2000_SAU_TIMING_3;
+        SO1     |= _0100_SAU_CH0_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
+        break;
+    case SPI_MODE1:
+        SCR10 = (SCR10 & (uint16_t)~SPI_MODE_MASK) | _1000_SAU_TIMING_2;
+        SO1     &= (uint16_t)~_0100_SAU_CH0_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
+        break;
     case SPI_MODE0:
-    default:            SCR03 = (SCR03 & (uint16_t)~SPI_MODE_MASK) | _3000_SAU_TIMING_4; break;
+    default:
+        SCR10 = (SCR10 & (uint16_t)~SPI_MODE_MASK) | _3000_SAU_TIMING_4;
+        SO1     &= (uint16_t)~_0100_SAU_CH0_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
+        break;
     }
 
-    CSIIF11  = 0U;                                              /* clear INTCSI20 interrupt flag */
+    CSIIF20  = 0U;                                              /* clear INTCSI20 interrupt flag */
 
-    SO0     |= _0800_SAU_CH3_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
-    SO0     &= (uint16_t)~_0008_SAU_CH3_DATA_OUTPUT_1;          /* CSI20 SO initial level */
-    SOE0    |= _0008_SAU_CH3_OUTPUT_ENABLE;                     /* enable CSI20 output */
-    SS0     |= _0008_SAU_CH3_START_TRG_ON;                      /* enable CSI20 */
+//    SO1     |= _0100_SAU_CH0_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
+//    SO1     &= (uint16_t)~_0001_SAU_CH0_DATA_OUTPUT_1;          /* CSI20 SO initial level */
+    SOE1    |= _0001_SAU_CH0_OUTPUT_ENABLE;                     /* enable CSI20 output */
+    SS1     |= _0001_SAU_CH0_START_TRG_ON;                      /* enable CSI20 */
 }
 
 /**********************************************************************************************************************
@@ -251,21 +267,22 @@ void R_Config_CSI20_SetDataMode(uint8_t dataMode) {
  * Return Value : -
  *********************************************************************************************************************/
 void R_Config_CSI20_SetClockDivider(uint16_t clockDiv) {
-    ST0     |= _0008_SAU_CH3_STOP_TRG_ON;                       /* Stop channel 3 */
-    SOE0    &= (uint16_t)~_0008_SAU_CH3_OUTPUT_ENABLE;          /* disable CSI20 output */
+    ST1     |= _0001_SAU_CH0_STOP_TRG_ON;                       /* Stop unit 1, channel 0 */
+    SOE1    &= (uint16_t)~_0001_SAU_CH0_OUTPUT_ENABLE;          /* disable CSI11 output */
 
-    clockDiv = clockDiv <   2 ?   2U
+//    clockDiv = clockDiv <   2 ?   2U
+    clockDiv = clockDiv <   4 ?   4U
              : clockDiv > 256 ? 256U
              :                  clockDiv + (clockDiv & 1U);
 
-    SDR03    = ((clockDiv >> 1) - 1) << 9;
+    SDR10    = ((clockDiv >> 1) - 1) << 9;
 
-    CSIIF11  = 0U;                                              /* clear INTCSI20 interrupt flag */
+    CSIIF20  = 0U;                                              /* clear INTCSI20 interrupt flag */
 
-    SO0     |= _0800_SAU_CH3_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
-    SO0     &= (uint16_t)~_0008_SAU_CH3_DATA_OUTPUT_1;          /* CSI20 SO initial level */
-    SOE0    |= _0008_SAU_CH3_OUTPUT_ENABLE;                     /* enable CSI20 output */
-    SS0     |= _0008_SAU_CH3_START_TRG_ON;                      /* enable CSI20 */
+//    SO1     |= _0100_SAU_CH0_CLOCK_OUTPUT_1;                    /* CSI20 clock initial level */
+//    SO1     &= (uint16_t)~_0001_SAU_CH0_DATA_OUTPUT_1;          /* CSI20 SO initial level */
+    SOE1    |= _0001_SAU_CH0_OUTPUT_ENABLE;                     /* enable CSI20 output */
+    SS1     |= _0001_SAU_CH0_START_TRG_ON;                      /* enable CSI20 */
 }
 
 /**********************************************************************************************************************
@@ -276,10 +293,10 @@ void R_Config_CSI20_SetClockDivider(uint16_t clockDiv) {
  *********************************************************************************************************************/
 void R_Config_CSI20_SetClock(uint32_t clock) {
     uint16_t clockDiv;
-    uint32_t spi_frequency = R_BSP_GetFclkFreqHz() >> ((SPS0 >> 4) & 0x0F);
+    uint32_t spi_frequency = R_BSP_GetFclkFreqHz() >> ((SPS1 >> 4) & 0x0F);
 
     for (clockDiv = 2; clockDiv < 256; clockDiv += 2) {
-    	if (clock >= spi_frequency / clockDiv) {
+        if (clock >= spi_frequency / clockDiv) {
             break;
         }
     }

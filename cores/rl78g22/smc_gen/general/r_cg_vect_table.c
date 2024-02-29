@@ -266,13 +266,12 @@ INT_WDTI,
 /*
  * INT_TM04 (0x42)
  */
-	INT_TM04,
-
+    r_Config_TAU0_4_Servo_interrupt,
 
 /*
  * INT_TM05 (0x44)
  */
-	INT_TM05,
+    r_Config_TAU0_5_Servo_interrupt,
 
 /*
  * INT_TM06 (0x46)

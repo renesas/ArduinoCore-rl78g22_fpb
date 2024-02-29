@@ -28,6 +28,7 @@ extern uint16_t g_u16ADUL;
 extern uint16_t g_u16ADLL;
 
 volatile unsigned long g_u32timer_periodic = 0u;    // ms周期処理用インターバルタイマ変数
+
 #if 0
 volatile unsigned long g_u32microtimer_periodic = 0u;    // us周期処理用インターバルタイマ変数
 #endif
@@ -523,7 +524,7 @@ void execCyclicHandler(void)
  ***************************************************************************/
 int getTemperature(uint8_t u8Mode)
 {
-    extern uint8_t  g_adc_int_flg;
+    extern volatile uint8_t  g_adc_int_flg;
     uint8_t u8count;
     uint16_t u16temp;
     uint16_t u16temp1; //温度センサ出力の値を入れる変数
@@ -544,16 +545,15 @@ int getTemperature(uint8_t u8Mode)
         {
             if(g_adc_int_flg == 1)
             {
-                 R_Config_ADC_Get_Result_10bit(&u16temp);
-                 u16temp1 = u16temp;//温度センサ出力の値を入れる
-                   g_adc_int_flg = 0;
-                   break;
-             }
+                R_Config_ADC_Get_Result_10bit(&u16temp);
+                u16temp1 = u16temp;//温度センサ出力の値を入れる
+                g_adc_int_flg = 0;
+                break;
+            }
         }
 
      }
 
-    u8count = 0;
     //内部基準電圧出力で値を取得します。
     R_Config_ADC_Set_InternalReferenceVoltage();
     R_Config_ADC_Set_OperationOn();
@@ -566,10 +566,10 @@ int getTemperature(uint8_t u8Mode)
         {
             if(g_adc_int_flg == 1)
             {
-                 R_Config_ADC_Get_Result_10bit(&u16temp);
-                 u16temp2 = u16temp;//内部基準電圧出力の値を入れる
-                   g_adc_int_flg = 0;
-                   break;
+                R_Config_ADC_Get_Result_10bit(&u16temp);
+                u16temp2 = u16temp;//内部基準電圧出力の値を入れる
+                g_adc_int_flg = 0;
+                break;
             }
         }
     }

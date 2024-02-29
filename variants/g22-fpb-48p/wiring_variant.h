@@ -58,7 +58,7 @@ extern "C"{
 #define FREQUENCY_MAX_VAL	(8000000)
 
 /* pulseIn define. */
-#define PULSEIN_CLOCK_CYCLE 41
+#define PULSEIN_CLOCK_CYCLE 29
 
 #ifdef __cplusplus
 } // extern "C"

@@ -51,6 +51,7 @@ Includes
 #include "r_cg_ad_common.h"
 #include "r_cg_rtc_common.h"
 #include "r_cg_userdefine.h"
+#include "Config_TAU0_5_Servo.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)

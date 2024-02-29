@@ -37,7 +37,7 @@
 #define PMPUPIMPOM_CHECK_ENABLE        /* Do not change invalid bits */
 
 extern bool g_u8AnalogWriteAvailableTable[NUM_DIGITAL_PINS];
-extern volatile SwPwm g_SwPwm[NUM_SWPWM_PINS];
+// extern volatile SwPwm g_SwPwm[NUM_SWPWM_PINS];
 extern const PinTableType * pinTablelist[NUM_DIGITAL_PINS];
 extern Pwm_func pwm_ch[PWM_CH_NUM];
 extern int8_t get_pwm_channel(uint8_t pwm_num);

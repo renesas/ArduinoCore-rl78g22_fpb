@@ -47,7 +47,8 @@ int main(void)
     R_Config_TAU0_6_Micros_Start();
 
     /* Start RTC Timer */
-//    R_Config_RTC_Start();    /*//KAD Start RTC Timer */
+    R_Config_RTC_Start();    /*//KAD Start RTC Timer */
+    delayMicroseconds(62);    /* Wait more than 2 clocks of fRTCCK */
     R_Config_ITL013_SetCompareMatch(0x20, 0x0);
     R_Config_ITL013_Start();
 
@@ -70,10 +71,6 @@ int main(void)
 #if !defined(IIC_CHANNEL0) | (IIC_CHANNEL0!=0)
     R_IICA0_Set_Reset();
     R_IICA0_Set_PowerOff();
-#endif
-/* RTC */
-#if !defined(RTC_ON) | (RTC_ON!=0)
-    R_RTC_Set_PowerOff();
 #endif
 
 #if WDT_EN==1

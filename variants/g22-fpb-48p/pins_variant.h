@@ -126,9 +126,9 @@ typedef struct {
 
 
 #define PIN_SPI_SS    (10)
-#define PIN_SPI_MOSI  (14)
-#define PIN_SPI_MISO  (13)
-#define PIN_SPI_SCK   (15)
+#define PIN_SPI_MOSI  (11)
+#define PIN_SPI_MISO  (12)
+#define PIN_SPI_SCK   (13)
 
 extern const uint8_t SS;
 extern const uint8_t MOSI;

@@ -106,15 +106,12 @@ void INT_ST0(void) __attribute__ ((interrupt));
 /*
  * INT_TM00 (0x20)
  */
-//void r_Config_TAU0_0_channel0_interrupt(void) __attribute__ ((interrupt));
 void r_Config_TAU0_0_PWM_interrupt(void) __attribute__ ((interrupt));
 
 /*
  * INT_SRE0/INT_TM01H (0x22)
  */
 void r_Config_UART0_interrupt_error(void) __attribute__ ((interrupt));
-//void INT_SRE0(void) __attribute__ ((interrupt));
-// 2022/11/07 added by KAD
 void INT_TM01H(void) __attribute__ ((interrupt));
 /*
  * INT_ST1 (0x24)
@@ -125,9 +122,7 @@ void INT_ST1(void) __attribute__ ((interrupt));
 /*
  * INT_CSI11/INT_IIC11/INT_SR1 (0x26)
  */
-// void r_Config_CSI11_interrupt(void) __attribute__ ((interrupt));
 void r_Config_CSI11_UART1_interrupt_switching(void) __attribute__ ((interrupt));
-// 2022/11/07 added by KAD
 void r_Config_UART1_interrupt_receive(void);
 void INT_SR1(void) __attribute__ ((interrupt));
 /*
@@ -141,22 +136,16 @@ void INT_SRE1(void) __attribute__ ((interrupt));
 /*
  * INT_IICA0 (0x2A)
  */
-// void INT_IICA0(void) __attribute__ ((interrupt));
-// 2022/11/07 added by KAD
 void r_Config_IICA0_interrupt(void) __attribute__ ((interrupt));
 /*
  * INT_CSI01/INT_IIC01/INT_SR0 (0x2C)
  */
 void INT_SR0(void) __attribute__ ((interrupt));
-//void INT_CSI01(void) __attribute__ ((interrupt));
-//void INT_IIC01(void) __attribute__ ((interrupt));
 void r_Config_UART0_interrupt_receive(void) __attribute__ ((interrupt));
 
 /*
  * INT_TM01 (0x2E)
  */
-// void r_Config_TAU0_0_channel1_interrupt(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
 void r_Config_TAU0_1_Square_Wave_interrupt(void) __attribute__ ((interrupt));
 void INT_TM01(void) __attribute__ ((interrupt));
 /* 1118 nhu add */
@@ -164,20 +153,14 @@ void INT_TM01(void) __attribute__ ((interrupt));
 /*
  * INT_TM02 (0x30)
  */
-//void r_Config_TAU0_2_channel2_interrupt(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
 void r_Config_TAU0_2_Square_Wave_interrupt(void) __attribute__ ((interrupt));
 void INT_TM02(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
 
 /*
  * INT_TM03 (0x32)
  */
-//void r_Config_TAU0_2_channel3_interrupt(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
 void r_Config_TAU0_3_Square_Wave_interrupt(void) __attribute__ ((interrupt));
 void INT_TM03(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
 
 /*
  * INT_AD (0x34)
@@ -187,8 +170,6 @@ void r_Config_ADC_interrupt(void) __attribute__ ((interrupt));
 /*
  * INT_RTC (0x36)
  */
-// 2022/11/07 modified by KAD
-// void INT_RTC(void) __attribute__ ((interrupt));
 void r_Config_RTC_interrupt(void) __attribute__ ((interrupt));
 
 /*
@@ -204,43 +185,29 @@ void INT_KR(void) __attribute__ ((interrupt));
 /*
  * INT_TM04 (0x42)
  */
-//void r_Config_TAU0_4_channel4_interrupt(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
-void r_Config_TAU0_4_Square_Wave_interrupt(void) __attribute__ ((interrupt));
-void INT_TM04(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
+void r_Config_TAU0_4_Servo_interrupt(void) __attribute__ ((interrupt));
 
 /*
  * INT_TM05 (0x44)
  */
-//void r_Config_TAU0_4_channel5_interrupt(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
-void r_Config_TAU0_5_Square_Wave_interrupt(void) __attribute__ ((interrupt));
-void INT_TM05(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
+void r_Config_TAU0_5_Servo_interrupt(void) __attribute__ ((interrupt));
 
 /*
  * INT_TM06 (0x46)
  */
-//void r_Config_TAU0_6_channel6_interrupt(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
 void r_Config_TAU0_6_Square_Wave_interrupt(void) __attribute__ ((interrupt));
 void r_Config_TAU0_6_Micros_interrupt(void) __attribute__ ((interrupt));
 void INT_TM06(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
 
 /*
  * INT_TM07 (0x48)
  */
-//void r_Config_TAU0_6_channel7_interrupt(void) __attribute__ ((interrupt));
-/* 1118 nhu add */
 void r_Config_TAU0_7_Square_Wave_interrupt(void) __attribute__ ((interrupt));
 void INT_TM07(void) __attribute__ ((interrupt));
 
 /*
  * INT_P6 (0x4A)
  */
-//void INT_P6(void) __attribute__ ((interrupt));
 void r_Config_INTC_intp6_interrupt(void) __attribute__ ((interrupt));
 
 /*

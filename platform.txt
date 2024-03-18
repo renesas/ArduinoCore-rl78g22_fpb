@@ -95,11 +95,12 @@ inc27="-I{runtime.platform.path}/cores/rl78g22/smc_gen/r_bsp/mcu/rl78_g22/regist
 inc28="-I{runtime.platform.path}/cores/rl78g22/smc_gen/r_bsp/mcu/rl78_g22/register_access/llvm"
 inc29="-I{runtime.platform.path}/cores/rl78g22/smc_gen/r_config"
 inc30="-I{runtime.platform.path}/variants/g22-fpb-48p"
+inc31="-I{runtime.platform.path}/cores/rl78g22/api/deprecated"
 
 incA={inc0}  {inc1}  {inc2}  {inc3}  {inc4}  {inc5}  {inc6}  {inc7}  {inc8}  {inc9} 
 incB={inc10} {inc11} {inc12} {inc13} {inc14} {inc15} {inc16} {inc17} {inc18} {inc19} 
 incC={inc20} {inc21} {inc22} {inc23} {inc24} {inc25} {inc26} {inc27} {inc28} {inc29} 
-incD={inc30}
+incD={inc30} {inc31} 
 incE=
 
 compiler.includes={incA} {incB} {incC} {incD} {incE} 

@@ -14,15 +14,15 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_TAU0_4_Servo_user.c
-* Version      : 1.1.0
-* Device(s)    : R7F102GGExFB
-* Description  : This file implements device driver for Config_TAU0_4.
-* Creation Date: 
+* File Name        : Config_TAU0_4_Servo_user.c
+* Component Version: 1.4.0
+* Device(s)        : R7F102GGExFB
+* Description      : This file implements device driver for Config_TAU0_4_Servo.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -44,11 +44,12 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
+void (*g_fServoInterruptFunc4)(void);
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Config_TAU0_4_Create_UserInit
-* Description  : This function adds user code after initializing the TAU0 channel4.
+* Function Name: R_Config_TAU0_4_Servo_Create_UserInit
+* Description  : This function adds user code after initializing the TAU0 channel 4.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
@@ -59,14 +60,17 @@ void R_Config_TAU0_4_Servo_Create_UserInit(void)
 }
 
 /***********************************************************************************************************************
-* Function Name: r_Config_TAU0_4_interrupt
+* Function Name: r_Config_TAU0_4_Servo_interrupt
 * Description  : This function is INTTM04 interrupt service routine.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 void r_Config_TAU0_4_Servo_interrupt(void)
 {
-    /* Start user code for r_Config_TAU0_4_interrupt. Do not edit comment generated here */
+    /* Start user code for r_Config_TAU0_4_Servo_interrupt. Do not edit comment generated here */
+    if (g_fServoInterruptFunc4) {
+        g_fServoInterruptFunc4();
+    }
     /* End user code. Do not edit comment generated here */
 }
 

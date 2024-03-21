@@ -14,15 +14,15 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_TAU0_5_Servo_user.c
-* Version      : 1.1.0
-* Device(s)    : R7F102GGExFB
-* Description  : This file implements device driver for Config_TAU0_5.
-* Creation Date: 
+* File Name        : Config_TAU0_5_Servo_user.c
+* Component Version: 1.4.0
+* Device(s)        : R7F102GGExFB
+* Description      : This file implements device driver for Config_TAU0_5_Servo.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -44,29 +44,34 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
+void (*g_fServoInterruptFunc5)(void);
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Config_TAU0_5_Create_UserInit
-* Description  : This function adds user code after initializing the TAU0 channel5.
+* Function Name: R_Config_TAU0_5_Servo_Create_UserInit
+* Description  : This function adds user code after initializing the TAU0 channel 5.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 void R_Config_TAU0_5_Servo_Create_UserInit(void)
 {
     /* Start user code for user init. Do not edit comment generated here */
+//    g_u32microtimer_periodic = 0;
     /* End user code. Do not edit comment generated here */
 }
 
 /***********************************************************************************************************************
-* Function Name: r_Config_TAU0_5_interrupt
+* Function Name: r_Config_TAU0_5_Servo_interrupt
 * Description  : This function is INTTM05 interrupt service routine.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 void r_Config_TAU0_5_Servo_interrupt(void)
 {
-    /* Start user code for r_Config_TAU0_5_interrupt. Do not edit comment generated here */
+    /* Start user code for r_Config_TAU0_5_Servo_interrupt. Do not edit comment generated here */
+    if (g_fServoInterruptFunc5) {
+        g_fServoInterruptFunc5();
+    }
     /* End user code. Do not edit comment generated here */
 }
 

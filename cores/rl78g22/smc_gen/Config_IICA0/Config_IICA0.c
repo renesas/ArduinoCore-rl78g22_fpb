@@ -14,15 +14,15 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2022 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_IICA0.c
-* Version      : 1.0.0
-* Device(s)    : R7F100GLGxFB
-* Description  : This file implements device driver for Config_IICA0.
-* Creation Date: 2021-05-14
+* File Name        : Config_IICA0.c
+* Component Version: 1.4.0
+* Device(s)        : R7F102GGExFB
+* Description      : This file implements device driver for Config_IICA0.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -37,12 +37,11 @@ Includes
 #include "r_cg_macrodriver.h"
 #include "Config_IICA0.h"
 /* Start user code for include. Do not edit comment generated here */
-
-#include <math.h>
-#include "Arduino.h"
-
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
+
+// wakeup time of I2C SCL and SDA. If pulled up to Vdd, it can be set 0.
+#define I2C_WakeupTime 0.0
 
 /***********************************************************************************************************************
 Global variables and functions
@@ -72,8 +71,6 @@ void R_Config_IICA0_Create(void)
     IICAPR10 = 1U;
     IICAPR00 = 1U;
     /* Set SCLA0, SDAA0 pin */
-//    PMCE6 &= 0xFCU;
-//    CCDE &= 0xCFU;
     P6 &= 0xFCU;
     PM6 |= 0x03U;
     SMC0 = 0U;
@@ -230,7 +227,7 @@ MD_STATUS R_Config_IICA0_Master_Receive(uint8_t adr, uint8_t * const rx_buf, uin
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-
+double coeffL, coeffH;
 /**********************************************************************************************************************
  * Function Name: R_Config_IICA0_Master_SetClock
  * Description  : This function sets I2C clock frequency
@@ -249,14 +246,26 @@ void R_Config_IICA0_Master_SetClock(uint32_t clock) {
         return;
     }
 
-    double coeffL, coeffH;
+//    double coeffL, coeffH;
 #if !defined(DISABLE_CLOCK_FAST_PLUS)
     if      ( clock >= I2C_CLOCK_FAST_PLUS ) { clock = I2C_CLOCK_FAST_PLUS; coeffL = 0.50; coeffH = 0.50; }
     else
 #endif /* !defined(DISABLE_CLOCK_FAST_PLUS) */
-    if      ( clock >= I2C_CLOCK_FAST      ) { clock = I2C_CLOCK_FAST     ; coeffL = 0.52; coeffH = 0.48; }
-    else                                     { clock = I2C_CLOCK_STANDARD ; coeffL = 0.47; coeffH = 0.53; }
+//    if      ( clock >= I2C_CLOCK_FAST      ) { clock = I2C_CLOCK_FAST     ; coeffL = 0.52; coeffH = 0.48; }
+//    else                                     { clock = I2C_CLOCK_STANDARD ; coeffL = 0.47; coeffH = 0.53; }
 
+    if      ( clock >= I2C_CLOCK_FAST      )
+    {
+//    	clock = I2C_CLOCK_FAST     ;
+    	coeffL = 0.52;
+    	coeffH = 0.48;
+    }
+    else
+    {
+//    	clock = I2C_CLOCK_STANDARD ;
+    	coeffL = 0.47;
+    	coeffH = 0.53;
+    }
     /*
      * XXX:
      * Register access code is copied from `R_Config_IICA0_Create()`.
@@ -270,14 +279,13 @@ void R_Config_IICA0_Master_SetClock(uint32_t clock) {
     IICAPR10 = 1U;
     IICAPR00 = 1U;
     /* Set SCLA0, SDAA0 pin */
-//    PMCE6 &= 0xFCU;
-//    CCDE &= 0xCFU;
     P6 &= 0xFCU;
     PM6 |= 0x03U;
     SMC0 = 0U;
 
-    IICWL0 = (uint8_t)(ceil((configCPU_CLOCK_HZ / 2 * coeffL) / clock));
-    IICWH0 = (uint8_t)(ceil((configCPU_CLOCK_HZ / 2 * coeffH) / clock));
+    IICWL0 = (uint8_t)(ceil((double)(configCPU_CLOCK_HZ / 2 * coeffL) / (double)clock));
+//    IICWH0 = (uint8_t)(ceil((double)(configCPU_CLOCK_HZ / 2 * coeffH) / (double)clock));
+    IICWH0 = (uint8_t) (ceil(  (coeffH / (double)clock - I2C_WakeupTime ) * (double)configCPU_CLOCK_HZ / 2 ));
 
     IICCTL01 |= _01_IICA_fCLK_HALF;
     SVA0 = _10_IICA0_MASTERADDRESS;
@@ -292,5 +300,5 @@ void R_Config_IICA0_Master_SetClock(uint32_t clock) {
     /* Set SCLA0, SDAA0 pin */
     PM6 &= 0xFCU;
 }
-
 /* End user code. Do not edit comment generated here */
+

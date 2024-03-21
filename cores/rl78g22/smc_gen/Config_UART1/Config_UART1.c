@@ -59,7 +59,8 @@ uint16_t g_uart1_rx_length;                /* uart1 receive data length */
 ***********************************************************************************************************************/
 void R_Config_UART1_Create(void)
 {
-    SPS0 = _0040_SAU_CK01_FCLK_4 | _0004_SAU_CK00_FCLK_4;
+    SPS0 &= _000F_SAU_CK01_CLEAR;
+    SPS0 |= _0040_SAU_CK01_FCLK_4;
     ST0 |= (_0008_SAU_CH3_STOP_TRG_ON | _0004_SAU_CH2_STOP_TRG_ON);
     STMK1 = 1U;    /* disable INTST1 interrupt */
     STIF1 = 0U;    /* clear INTST1 interrupt flag */
@@ -83,7 +84,7 @@ void R_Config_UART1_Create(void)
     SDR02 = _1000_SAU0_CH2_TRANSMIT_DIVISOR;
     NFEN0 |= _04_SAU_RXD1_FILTER_ON;
     SIR03 = _0004_SAU_SIRMN_FECTMN | _0002_SAU_SIRMN_PECTMN | _0001_SAU_SIRMN_OVCTMN;    /* clear error flag */
-    SMR03 = _0020_SAU_SMRMN_INITIALVALUE | _8000_SAU_CLOCK_SELECT_CK01 | _0100_SAU_TRIGGER_RXD | _0000_SAU_EDGE_FALL |
+    SMR03 = _0020_SAU_SMRMN_INITIALVALUE | _8000_SAU_CLOCK_SELECT_CK01 | _0100_SAU_TRIGGER_RXD | _0000_SAU_EDGE_FALL | 
             _0002_SAU_MODE_UART | _0000_SAU_TRANSFER_END;
     SCR03 = _0004_SAU_SCRMN_INITIALVALUE | _4000_SAU_RECEPTION | _0400_SAU_INTSRE_ENABLE | _0000_SAU_PARITY_NONE | 
             _0080_SAU_LSB | _0010_SAU_STOP_1 | _0003_SAU_LENGTH_8;

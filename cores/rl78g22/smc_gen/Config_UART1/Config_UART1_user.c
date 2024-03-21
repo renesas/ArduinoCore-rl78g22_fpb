@@ -111,6 +111,7 @@ static void r_Config_UART1_callback_receiveend(void)
 static void r_Config_UART1_callback_error(uint8_t err_type)
 {
     /* Start user code for r_Config_UART1_callback_error. Do not edit comment generated here */
+    (void)err_type;  //Warning measures
     /* End user code. Do not edit comment generated here */
 }
 
@@ -124,6 +125,7 @@ static void r_Config_UART1_callback_error(uint8_t err_type)
 static void r_Config_UART1_callback_softwareoverrun(uint16_t rx_data)
 {
     /* Start user code for r_Config_UART1_callback_softwareoverrun. Do not edit comment generated here */
+    (void)rx_data;  //Warning measures
     /* End user code. Do not edit comment generated here */
 }
 

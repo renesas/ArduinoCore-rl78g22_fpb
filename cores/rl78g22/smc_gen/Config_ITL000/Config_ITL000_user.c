@@ -14,15 +14,15 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_ITL000_user.c
-* Version      : 1.1.0
-* Device(s)    : R7F102GGExFB
-* Description  : This file implements device driver for Config_ITL000.
-* Creation Date: 
+* File Name        : Config_ITL000_user.c
+* Component Version: 1.4.0
+* Device(s)        : R7F102GGExFB
+* Description      : This file implements device driver for Config_ITL000.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -45,9 +45,7 @@ Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
 extern volatile unsigned long g_u32timer_millis;
-// 2022/11/04
-// extern volatile unsigned long g_u32delay_timer;
-extern volatile int long g_u32delay_timer;
+extern volatile unsigned long g_u32delay_timer;
 extern uint8_t g_delay_cnt_flg;
 extern uint8_t g_timer_millis_overflow_cnt;
 /* End user code. Do not edit comment generated here */

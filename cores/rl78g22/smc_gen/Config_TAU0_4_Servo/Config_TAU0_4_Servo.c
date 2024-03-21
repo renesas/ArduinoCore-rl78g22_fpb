@@ -14,15 +14,15 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_TAU0_4_Servo.c
-* Version      : 1.1.0
-* Device(s)    : R7F102GGExFB
-* Description  : This file implements device driver for Config_TAU0_4.
-* Creation Date: 
+* File Name        : Config_TAU0_4_Servo.c
+* Component Version: 1.4.0
+* Device(s)        : R7F102GGExFB
+* Description      : This file implements device driver for Config_TAU0_4_Servo.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -47,15 +47,15 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Config_TAU0_4_Create
-* Description  : This function initializes the TAU0 channel4 module.
+* Function Name: R_Config_TAU0_4_Servo_Create
+* Description  : This function initializes the TAU0 channel 4 module.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 void R_Config_TAU0_4_Servo_Create(void)
 {
-    TPS0 &= _FFF0_TAU_CKM0_CLEAR;
-    TPS0 |= _0003_TAU_CKM0_FCLK_3;
+    TPS0 &= _FF0F_TAU_CKM1_CLEAR;
+    TPS0 |= _0050_TAU_CKM1_FCLK_5;
     /* Stop channel 4 */
     TT0 |= _0010_TAU_CH4_STOP_TRG_ON;
     /* Mask channel 4 interrupt */
@@ -64,26 +64,21 @@ void R_Config_TAU0_4_Servo_Create(void)
     /* Set INTTM04 low priority */
     TMPR104 = 1U;
     TMPR004 = 1U;
-    /* TAU04 used as square output function */
-    TMR04 = _0000_TAU_CLOCK_SELECT_CKM0 | _0000_TAU_CLOCK_MODE_CKS | _0000_TAU_COMBINATION_SLAVE | 
+    /* TAU04 used as interval timer */
+    TMR04 = _8000_TAU_CLOCK_SELECT_CKM1 | _0000_TAU_CLOCK_MODE_CKS | _0000_TAU_COMBINATION_SLAVE | 
             _0000_TAU_TRIGGER_SOFTWARE | _0000_TAU_MODE_INTERVAL_TIMER | _0000_TAU_START_INT_UNUSED;
-    TDR04 = _257F_TAU_TDR04_VALUE;
+    TDR04 = _0009_TAU_TDR04_VALUE;
     TOM0 &= (uint16_t)~_0010_TAU_CH4_SLAVE_OUTPUT;
     TOL0 &= (uint16_t)~_0010_TAU_CH4_OUTPUT_LEVEL_L;
     TO0 &= (uint16_t)~_0010_TAU_CH4_OUTPUT_VALUE_1;
-    TOE0 |= _0010_TAU_CH4_OUTPUT_ENABLE;
-    /* Set TO04 pin */
-    POM1 &= 0xF7U;
-    PMCT1 &= 0xF7U;
-    P1 &= 0xF7U;
-    PM1 &= 0xF7U;
-    
+    TOE0 &= (uint16_t)~_0010_TAU_CH4_OUTPUT_ENABLE;
+
     R_Config_TAU0_4_Servo_Create_UserInit();
 }
 
 /***********************************************************************************************************************
-* Function Name: R_Config_TAU0_4_Start
-* Description  : This function starts the TAU0 channel4 counter.
+* Function Name: R_Config_TAU0_4_Servo_Start
+* Description  : This function starts the TAU0 channel 4 counter.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
@@ -91,24 +86,27 @@ void R_Config_TAU0_4_Servo_Start(void)
 {
     TMIF04 = 0U;    /* clear INTTM04 interrupt flag */
     TMMK04 = 0U;    /* enable INTTM04 interrupt */
-    TOE0 |= _0010_TAU_CH4_OUTPUT_ENABLE;
     TS0 |= _0010_TAU_CH4_START_TRG_ON;
 }
 
 /***********************************************************************************************************************
-* Function Name: R_Config_TAU0_4_Stop
-* Description  : This function stops the TAU0 channel4 counter.
+* Function Name: R_Config_TAU0_4_Servo_Stop
+* Description  : This function stops the TAU0 channel 4 counter.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 void R_Config_TAU0_4_Servo_Stop(void)
 {
     TT0 |= _0010_TAU_CH4_STOP_TRG_ON;
-    TOE0 &= (uint16_t)~_0010_TAU_CH4_OUTPUT_ENABLE;
     /* Mask channel 4 interrupt */
     TMMK04 = 1U;    /* disable INTTM04 interrupt */
     TMIF04 = 0U;    /* clear INTTM04 interrupt flag */
 }
 
 /* Start user code for adding. Do not edit comment generated here */
+void R_Config_TAU0_4_Servo_SetPeriod(uint16_t preiod_us)
+{
+    TDR04 = 32 * preiod_us -1;
+}
+
 /* End user code. Do not edit comment generated here */

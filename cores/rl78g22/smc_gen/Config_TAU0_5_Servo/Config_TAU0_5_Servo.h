@@ -14,15 +14,15 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2023 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Config_TAU0_5_Servo.h
-* Version      : 1.1.0
-* Device(s)    : R7F102GGExFB
-* Description  : This file implements device driver for Config_TAU0_5.
-* Creation Date: 
+* File Name        : Config_TAU0_5_Servo.h
+* Component Version: 1.4.0
+* Device(s)        : R7F102GGExFB
+* Description      : This file implements device driver for Config_TAU0_5_Servo.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
 #ifndef CFG_Config_TAU0_5_Servo_H
@@ -40,7 +40,7 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#define _257F_TAU_TDR05_VALUE               (0x257FU)    /* 16-bit timer data register 05 (TDR05) */
+#define _001F_TAU_TDR05_VALUE               (0x001FU)    /* 16-bit timer data register 05 (TDR05) */
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -54,5 +54,6 @@ void R_Config_TAU0_5_Servo_Start (void);
 void R_Config_TAU0_5_Servo_Stop (void);
 void R_Config_TAU0_5_Servo_Create_UserInit (void);
 /* Start user code for function. Do not edit comment generated here */
+void R_Config_TAU0_5_Servo_SetPeriod(uint16_t preiod_us);
 /* End user code. Do not edit comment generated here */
 #endif

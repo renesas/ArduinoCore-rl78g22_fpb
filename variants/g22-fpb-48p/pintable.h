@@ -19,10 +19,10 @@
 #ifndef _PINTABLE_H_
 #define _PINTABLE_H_
 
-#include <pins_arduino.h>
+// #include <pins_arduino.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+// #include <math.h>
 
 #ifdef __cplusplus
 extern "C" {

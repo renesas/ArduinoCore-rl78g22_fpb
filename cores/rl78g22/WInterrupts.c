@@ -58,16 +58,14 @@ Interrupts_func Int_func =
 
 static bool IsFirst = true;
 
-// void attachInterrupt(uint8_t interruptNum, void (*userFunc)(void), int mode)
-
-//void attachInterrupt(pin_size_t interruptNum, voidFuncPtr userFunc, int mode)
-
 void attachInterrupt(pin_size_t interruptNum, voidFuncPtr userFunc, PinStatus p_mode)
 {
-	uint8_t mode = (uint8_t)p_mode;
-	if (interruptNum < EXTERNAL_NUM_INTERRUPTS) {
+    uint8_t mode = (uint8_t)p_mode;
+    if (interruptNum < EXTERNAL_NUM_INTERRUPTS)
+    {
         g_afInterruptFuncTable[interruptNum] = userFunc;
-        if(IsFirst){
+        if(IsFirst)
+        {
             Int_func.begin();
             IsFirst = false;
         }

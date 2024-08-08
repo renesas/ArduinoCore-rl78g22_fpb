@@ -14,67 +14,54 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2024 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_systeminit.c
-* Version      : 1.0.0
-* Device(s)    : R7F102GGExFB
-* Description  : This file implements system initializing function.
-* Creation Date: 
+* File Name        : Config_UARTA0.h
+* Component Version: 1.6.0
+* Device(s)        : R7F102GGExFB
+* Description      : This file implements device driver for Config_UARTA0.
+* Creation Date    : 
 ***********************************************************************************************************************/
 
-/***********************************************************************************************************************
-Pragma directive
-***********************************************************************************************************************/
-/* Start user code for pragma. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
-#include "r_cg_macrodriver.h"
-#include "Config_ADC.h"
-#include "Config_IICA0.h"
-#include "Config_RTC.h"
-#include "r_cg_sau_common.h"
-#include "r_cg_tau_common.h"
-#include "r_cg_itl_common.h"
-/* Start user code for include. Do not edit comment generated here */
-#include "Config_INTC.h"
-/* End user code. Do not edit comment generated here */
-#include "r_cg_userdefine.h"
+#include "r_cg_uarta.h"
+
+#ifndef CFG_Config_UARTA0_H
+#define CFG_Config_UARTA0_H
 
 /***********************************************************************************************************************
-Global variables and functions
+Macro definitions (Register bit)
 ***********************************************************************************************************************/
-/* Start user code for global. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_Systeminit
-* Description  : This function initializes every macro
-* Arguments    : None
-* Return Value : None
+Macro definitions
 ***********************************************************************************************************************/
-void R_Systeminit(void)
-{
-    PRR0 = 0x7FU;    /* reset IICA, ADC, TAU and SAU module */
-    PRR1 = 0xF3U;    /* reset DAC, SMS, COMP, ITL, REMC, CTSU module */
-    PRR0 = 0x00U;    /* release IICA, ADC, TAU and SAU module */
-    PRR1 = 0x00U;    /* release DAC, SMS, COMP, ITL, REMC, CTSU module */
-    /* Set peripheral settings */
-//    R_SAU0_Create();
-//    R_ITL_Create();
-//    R_TAU0_Create();
-    SAU0EN = 1U;    /* supplies input clock */    /* R_SAU0_Create(); */
-    SAU1EN = 1U;    /* supplies input clock */    /* R_SAU1_Create(); */
-    TAU0EN = 1U;    /* start TAU0 clock */        /* R_TAU0_Create(); */
-    TML32EN = 1U;    /* start 32-bits IT clock */ /* R_ITL_Create();  */
-    UTAEN = 1U;    /* start UARTA clock */ /* R_Config_UARTA1_Create();  */
-    R_Config_ADC_Create();
+#define _09_UARTA_OUTPUT_BAUDRATE             (0x09U)
+#define UARTA0_WAIT_1_CLOCK_CYCLE             (1U)    /* wait for 1 cycle as default,
+                                                         please change the waiting time value according to the system */
 
-    /* The RTC initializes when using the function. */
-    R_Config_RTC_Create();
-}
+/***********************************************************************************************************************
+Typedef definitions
+***********************************************************************************************************************/
+
+/***********************************************************************************************************************
+Global functions
+***********************************************************************************************************************/
+void R_Config_UARTA0_Create (void);
+void R_Config_UARTA0_Start (void);
+void R_Config_UARTA0_Stop (void);
+MD_STATUS R_Config_UARTA0_Send (uint8_t * const tx_buf, uint16_t tx_num);
+MD_STATUS R_Config_UARTA0_Receive (uint8_t * const rx_buf, uint16_t rx_num);
+void R_Config_UARTA0_Loopback_Enable (void);
+void R_Config_UARTA0_Loopback_Disable (void);
+void R_Config_UARTA0_Create_UserInit (void);
+/* Start user code for function. Do not edit comment generated here */
+
+/* End user code. Do not edit comment generated here */
+#endif
+

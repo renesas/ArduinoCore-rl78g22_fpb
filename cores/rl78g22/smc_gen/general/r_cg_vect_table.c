@@ -375,12 +375,14 @@ INT_WDTI,
 /*
  * INT_UT0 (0x6A)
  */
-    INT_UT0,
+// 20240630 polling/ interrupt
+    r_Config_UARTA0_interrupt_send,
+//    INT_UT0,
 
 /*
  * INT_UR0 (0x6C)
  */
-    INT_UR0,
+    r_Config_UARTA0_interrupt_receive,
 
 /*
  * Padding (0x6E)

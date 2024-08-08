@@ -25,17 +25,10 @@
  * Pins descriptions
  */
 
-
-// 2023/02/20
 const uint8_t SS   = PIN_SPI_SS;
 const uint8_t MOSI = PIN_SPI_MOSI;
 const uint8_t MISO = PIN_SPI_MISO;
 const uint8_t SCK  = PIN_SPI_SCK;
-
-const uint8_t SDA0 = PIN_WIRE_SDA0;
-const uint8_t SCL0 = PIN_WIRE_SCL0;
-const uint8_t SDA1 = PIN_WIRE_SDA1;
-const uint8_t SCL1 = PIN_WIRE_SCL1;
 
 const uint8_t A0 = PIN_A0;
 const uint8_t A1 = PIN_A1;

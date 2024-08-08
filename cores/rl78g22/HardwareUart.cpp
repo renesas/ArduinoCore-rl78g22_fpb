@@ -30,7 +30,6 @@
  */
 /* #define DEBUGDISP_MODE */
 
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -42,12 +41,11 @@ extern "C" {
 }
 
 #include "Arduino.h"
-// #include "platform.h"
-
 
 extern "C" {
     #include "pintable.h"
     extern const PinTableType * pinTablelist[NUM_DIGITAL_PINS];
+    #include "pins_variant.h"
 }
 
 extern "C" {
@@ -60,10 +58,13 @@ extern "C" {
 #if ( UART2_CHANNEL == 2 )
     #include "Config_UART2.h"
 #endif /* ( UART2_CHANNEL == 2 ) */
+#if ( UART3_CHANNEL == 3 )
+    #include "Config_UARTA0.h"
+#endif /* ( UART3_CHANNEL == 3 ) */
 
 
 };
-
+#if 0
 #if ( UART_CHANNEL == 0 ) /* ( UART_CHANNEL == 2 ) */
 #define URT_RXDx     RXD0
 #define URT_TXDx     TXD0
@@ -344,6 +345,8 @@ extern "C" {
 #define URT2_SFR2_BIT_SSxx1   1         /* SS11   :SS1.1   */
 #endif /* ( UART2_CHANNEL == 2 ) */
 
+#endif /* (#if 0) */
+
 /*
  * this next line disables the entire HardwareUart.cpp,
  * this is so I can support Attiny series and any other chip without a uart
@@ -364,8 +367,8 @@ void serialEventRun(void)
 
 }
 
-fInterruptFunc_t uart_receive_callback_table[3] __attribute__((weak));
-fInterruptFunc_t uart_transmit_callback_table[3] __attribute__((weak));
+fInterruptFunc_t uart_receive_callback_table[UART_TOTAL_NUM] __attribute__((weak));
+fInterruptFunc_t uart_transmit_callback_table[UART_TOTAL_NUM] __attribute__((weak));
 
 // Constructors ////////////////////////////////////////////////////////////////
 
@@ -511,6 +514,14 @@ void HardwareUart::begin(unsigned long baud, uint16_t config, int rx_buf, int tx
 #endif /* UART2_CHANNEL==2 */
             break;
         case 3:
+#if (UART3_CHANNEL==3)
+            R_Config_UARTA0_Create();
+            Set_Baudrate(baud);
+            Set_SerialPort(SERIAL_TXD3,SERIAL_RXD3);
+            Set_Config(config);
+            R_Config_UARTA0_Start();
+            R_Config_UARTA0_Receive((uint8_t * const)&receive_buffer,1);
+#endif /* UART3_CHANNEL==3 */
             break;
         default :
             /* Do nothing */
@@ -544,6 +555,9 @@ void HardwareUart::end()
 #endif /* (UART2_CHANNEL == 2 ) */
         break;
     case 3:
+#if (UART3_CHANNEL == 3 )
+            R_Config_UARTA0_Stop();
+#endif /* (UART3_CHANNEL == 3 ) */
         break;
         }
 #if defined(FEW_RAM_MODEL) && (FEW_RAM_MODEL == 1)
@@ -596,11 +610,14 @@ int HardwareUart::available(void)
  *********************************************************************************************************************/
 int HardwareUart::peek(void)
 {
-  if (_rx_buffer_head == _rx_buffer_tail) {
-    return -1;
-  } else {
-    return _rx_buffer[_rx_buffer_tail];
-  }
+    if (_rx_buffer_head == _rx_buffer_tail)
+    {
+        return -1;
+    }
+    else
+    {
+        return _rx_buffer[_rx_buffer_tail];
+    }
 }
 
 /**********************************************************************************************************************
@@ -614,7 +631,8 @@ int HardwareUart::read(void)
 {
     /* if the head isn't ahead of the tail, we don't have any characters */
     noInterrupts();
-    if (_rx_buffer_head == _rx_buffer_tail) {
+    if (_rx_buffer_head == _rx_buffer_tail)
+    {
         interrupts();
         return -1;
     }
@@ -634,32 +652,48 @@ int HardwareUart::read(void)
 void HardwareUart::flush()
 {
   /* buffer is none */
-  if (0 == _tx_buf_size || 0 == _tx_buffer){
-    return;
-  }
-  if (_urt_channel == 0) {
-    while (SSR00 & (_0040_SAU_UNDER_EXECUTE | _0020_SAU_VALID_STORED)) {  /* check TSF00 and BFF00 */
-      ;
+    if (0 == _tx_buf_size || 0 == _tx_buffer)
+    {
+        return;
     }
-  }
-  else if (_urt_channel == 1) {
-    while (SSR02 & (_0040_SAU_UNDER_EXECUTE | _0020_SAU_VALID_STORED)) {  /* check TSF02 and BFF02 */
-      ;
+    if (_urt_channel == 0)
+    {
+        while (SSR00 & (_0040_SAU_UNDER_EXECUTE | _0020_SAU_VALID_STORED))
+        {  /* check TSF00 and BFF00 */
+            ;
+        }
     }
-  }
+#if ( UART1_CHANNEL == 1 )
+    else if (_urt_channel == 1)
+    {
+        while (SSR02 & (_0040_SAU_UNDER_EXECUTE | _0020_SAU_VALID_STORED))
+        {  /* check TSF02 and BFF02 */
+            ;
+        }
+    }
+#endif /* ( UART1_CHANNEL == 1 ) */
 #if ( UART2_CHANNEL == 2 )
-  else if (_urt_channel == 2) {
-    while (SSR10 & (_0040_SAU_UNDER_EXECUTE | _0020_SAU_VALID_STORED)) {  /* check TSF10 and BFF10 */
-
-      ;
+    else if (_urt_channel == 2)
+    {
+        while (SSR10 & (_0040_SAU_UNDER_EXECUTE | _0020_SAU_VALID_STORED))
+        {  /* check TSF10 and BFF10 */
+            ;
+        }
     }
-  }
 #endif /* ( UART2_CHANNEL == 2 ) */
-
-  while(_tx_buf_size-1!=availableForWrite())
-  {
-    NOP();
-  }
+#if ( UART3_CHANNEL == 3 )
+    else if (_urt_channel == 3)
+    {
+        while ( (ASISA0 & _20_UARTA_DATA_EXIST_IN_TXBA) )
+        {  /* check TXBFA0 */
+            ;
+        }
+    }
+#endif /* ( UART3_CHANNEL == 3 ) */
+    while(_tx_buf_size-1!=availableForWrite())
+    {
+        NOP();
+    }
 }
 
 /**********************************************************************************************************************
@@ -677,21 +711,20 @@ size_t HardwareUart::UART_Send(uint8_t c)
     size_t ret = 0;
 
     /* buffer is none */
-    if (0 == _tx_buf_size){
+    if (0 == _tx_buf_size)
+    {
         return ret;
     }
-
     isp = (uint8_t)GET_PSW_ISP();
-
     noInterrupts();
-    if(_tx_buffer_tail == _tx_buffer_head){
+    if(_tx_buffer_tail == _tx_buffer_head)
+    {
         /* Unsent */
         //int head = (_tx_buffer_head + 1);
         i = (_tx_buffer_head + 1) % _tx_buf_size;
         _tx_buffer[_tx_buffer_head] = c;
         _tx_buffer_head = i;
         interrupts();
-
         switch (_urt_channel)
         {
             case 0:
@@ -702,11 +735,13 @@ size_t HardwareUart::UART_Send(uint8_t c)
                 err = R_Config_UART0_Send((uint8_t * const)&c,1);
                 break;
             case 1:
+#if ( UART1_CHANNEL == 1 )
                 if((SSR02 & _0020_SAU_VALID_STORED) != 0)/*BFF02*/
                 {
                     return 0;
                 }
                 err = R_Config_UART1_Send((uint8_t * const)&c,1);
+#endif /* ( UART1_CHANNEL == 1 ) */
                 break;
             case 2:
 #if ( UART2_CHANNEL == 2 )
@@ -718,6 +753,13 @@ size_t HardwareUart::UART_Send(uint8_t c)
 #endif /* ( UART2_CHANNEL == 2 ) */
                 break;
             case 3:
+#if ( UART3_CHANNEL == 3 )
+                if((ASISA0 & _20_UARTA_DATA_EXIST_IN_TXBA) != 0)
+                {
+                    return 0;
+                }
+                err = R_Config_UARTA0_Send((uint8_t * const)&c,1);
+#endif /* ( UART3_CHANNEL == 3 ) */
                 break;
         }
     }
@@ -744,33 +786,40 @@ size_t HardwareUart::UART_Send(uint8_t c)
                 switch (_urt_channel)
                 {
                     case 0:
-        #if ( UART_CHANNEL == 0 )
-                        while((SSR00 & _0020_SAU_VALID_STORED) != 0)/*BFF00*/
-                        {
+#if ( UART_CHANNEL == 0 )
+                        while (SSR00 & (_0040_SAU_UNDER_EXECUTE | _0020_SAU_VALID_STORED))
+                        {  /* check TSF00 and BFF00 */
                             ;
                         }
                         STIF0 = 0;
-        #endif /* ( UART_CHANNEL == 0 ) */
+#endif /* ( UART_CHANNEL == 0 ) */
                         break;
                     case 1:
-        #if ( UART1_CHANNEL == 1 )
-                        while((SSR02 & _0020_SAU_VALID_STORED) != 0)/*BFF02*/
-                        {
+#if ( UART1_CHANNEL == 1 )
+                        while (SSR02 & (_0040_SAU_UNDER_EXECUTE | _0020_SAU_VALID_STORED))
+                        {  /* check TSF02 and BFF02 */
                             ;
                         }
                         STIF1 = 0;
-        #endif /* ( UART1_CHANNEL == 1 ) */
+#endif /* ( UART1_CHANNEL == 1 ) */
                         break;
                     case 2:
-        #if ( UART2_CHANNEL == 2 )
-                        while((SSR10 & _0020_SAU_VALID_STORED) != 0)/*BFF10*/
-                        {
+#if ( UART2_CHANNEL == 2 )
+                        while (SSR10 & (_0040_SAU_UNDER_EXECUTE | _0020_SAU_VALID_STORED))
+                        {  /* check TSF10 and BFF10 */
                             ;
                         }
                         STIF2 = 0;
-        #endif /* ( UART2_CHANNEL == 2 ) */
+#endif /* ( UART2_CHANNEL == 2 ) */
                         break;
                     case 3:
+#if ( UART3_CHANNEL == 3 )
+                        while((ASISA0 & _20_UARTA_DATA_EXIST_IN_TXBA) != 0)
+                        {
+                            ;
+                        }
+                        UTIF0 = 0;
+#endif /* ( UART3_CHANNEL == 3 ) */
                         break;
                 }
                 Set_Char_Serial_from_buf(_urt_channel);
@@ -814,14 +863,14 @@ size_t HardwareUart::write(uint8_t c)
  *********************************************************************************************************************/
 int HardwareUart::availableForWrite(void)
 {
-  int head = 0;
-  int tail = 0;
-  noInterrupts();
-  head = _tx_buffer_head;
-  tail = _tx_buffer_tail;
-  interrupts();
-  if (head >= tail) return _tx_buf_size - 1 - head + tail;
-  return (tail - head - 1);
+    int head = 0;
+    int tail = 0;
+    noInterrupts();
+    head = _tx_buffer_head;
+    tail = _tx_buffer_tail;
+    interrupts();
+    if (head >= tail) return _tx_buf_size - 1 - head + tail;
+    return (tail - head - 1);
 }
 
 /**********************************************************************************************************************
@@ -832,15 +881,14 @@ int HardwareUart::availableForWrite(void)
  *********************************************************************************************************************/
 int HardwareUart::availableForRead(void)
 {
-  int head = 0;
-  int tail = 0;
-  noInterrupts();
-  head = _rx_buffer_head;
-  tail = _rx_buffer_tail;
-  interrupts();
-  if (head >= tail) return _rx_buf_size - 1 - head + tail;
-  return (tail - head - 1);
-
+    int head = 0;
+    int tail = 0;
+    noInterrupts();
+    head = _rx_buffer_head;
+    tail = _rx_buffer_tail;
+    interrupts();
+    if (head >= tail) return _rx_buf_size - 1 - head + tail;
+    return (tail - head - 1);
 }
 
 HardwareUart::operator bool() {
@@ -879,6 +927,9 @@ void HardwareUart::load_char(void){
 #endif /* (UART2_CHANNEL == 2) */
             break;
         case 3:
+#if (UART3_CHANNEL == 3)
+                R_Config_UARTA0_Send((uint8_t * const)&send_buffer,1);
+#endif /* (UART3_CHANNEL == 3) */
             break;
         }
     }
@@ -915,6 +966,10 @@ void HardwareUart::store_char(void){
         R_Config_UART2_Receive((uint8_t * const)&receive_buffer,1);
     #endif /* (UART2_CHANNEL == 2) */
         break;
+        case 3:
+#if (UART3_CHANNEL == 3)
+            R_Config_UARTA0_Receive((uint8_t * const)&receive_buffer,1);
+#endif /* (UART3_CHANNEL == 3) */
         break;
     }
 }
@@ -928,14 +983,15 @@ void HardwareUart::store_char(void){
  * Return Value : -
  *********************************************************************************************************************/
 void HardwareUart::store_char(unsigned char c){
-  int i = (_rx_buffer_head + 1) % _rx_buf_size;
-  if (i != _rx_buffer_tail) {
-    _rx_buffer[_rx_buffer_head] = c;
-    _rx_buffer_head = i;
-  }
+    int i = (_rx_buffer_head + 1) % _rx_buf_size;
+    if (i != _rx_buffer_tail)
+    {
+        _rx_buffer[_rx_buffer_head] = c;
+        _rx_buffer_head = i;
+    }
 }
 
-/* Add for RL78/G23 */
+/* Add for RL78/G23 RL78/G22 */
 /**********************************************************************************************************************
  * Function Name: HardwareUart::Set_Baudrate
  * Description  : Set baud rate for the serial port.
@@ -945,6 +1001,8 @@ void HardwareUart::store_char(unsigned char c){
  *********************************************************************************************************************/
 void HardwareUart::Set_Baudrate(unsigned long baudrate)
 {
+    if (( _urt_channel == 0 ) || ( _urt_channel == 1 )  || ( _urt_channel == 2 ))
+    {
     uint32_t fclk_frequency;
     uint32_t  peri_clk    ;
     uint8_t  sdr     ;
@@ -990,11 +1048,32 @@ void HardwareUart::Set_Baudrate(unsigned long baudrate)
             SDR11 = ((uint16_t)sdr) << 9 ;
 #endif /* ( UART2_CHANNEL == 2 ) */
             break;
-        case 3:
-            break;
+
         default :
             /* Do nothing */
             break;
+        }
+    }
+    else
+    {
+        uint16_t tmp_brgc ;
+        uint16_t brgc ;
+        uint32_t fclk_frequency;
+        uint32_t  peri_clk    ;
+        uint8_t  prs = 0U;
+        fclk_frequency = R_BSP_GetFclkFreqHz();
+        peri_clk    = fclk_frequency; /* SPSmk0\[3:0] = 0x0 */
+        tmp_brgc = (uint16_t)(((peri_clk/baudrate) >> 1) -1) ;
+        while(0x007F<tmp_brgc)
+        {
+            prs++;
+            peri_clk = (peri_clk >> 1);
+            tmp_brgc  = (uint16_t)(((peri_clk/baudrate) >> 1) -1) ;
+        }
+        brgc = (uint16_t)(peri_clk/baudrate);
+        UTA0CK = _20_UARTA_FSEL_SELECT_FIHP | prs;
+
+        BRGCA0 =  (uint8_t)(tmp_brgc & 0x00FF) ;
     }
 }
 
@@ -1032,36 +1111,84 @@ void HardwareUart::Set_Config(uint16_t config )
     }
     if(SERIAL_DATA_7 == (SERIAL_DATA_MASK & config))
     {
-        converted_config |= _0002_SAU_LENGTH_7;
+        if(( _urt_channel == 0 ) || ( _urt_channel == 1 ) || ( _urt_channel == 2 ))
+        {
+            converted_config |= _0002_SAU_LENGTH_7;
+        }
+        else
+        {
+            converted_config |= _10_UARTA_TRANSFER_LENGTH_7;
+        }
     }
     else
     {
         /* All other settings are treated as SERIAL_DATA_8(default). */
-        converted_config |= _0003_SAU_LENGTH_8;
+        if(( _urt_channel == 0 ) || ( _urt_channel == 1 ) || ( _urt_channel == 2 ))
+        {
+            converted_config |= _0003_SAU_LENGTH_8;
+        }
+        else
+        {
+            converted_config |= _18_UARTA_TRANSFER_LENGTH_8;
+        }
     }
 
     if(SERIAL_STOP_BIT_2 == (SERIAL_STOP_BIT_MASK & config))
     {
-        converted_config |= _0020_SAU_STOP_2;
-    }
+        if(( _urt_channel == 0 ) || ( _urt_channel == 1 ) || ( _urt_channel == 2 ))
+        {
+            converted_config |= _0020_SAU_STOP_2;
+        }
+        else
+        {
+            converted_config |= _04_UARTA_STOP_BIT_2;
+        }    }
     else
     {
         /* All other settings are treated as SERIAL_STOP_BIT_1(default). */
-        converted_config |= _0010_SAU_STOP_1;
+        if(( _urt_channel == 0 ) || ( _urt_channel == 1 ) || ( _urt_channel == 2 ))
+        {
+            converted_config |= _0010_SAU_STOP_1;
+        }
+        else
+        {
+            converted_config |= _00_UARTA_STOP_BIT_1;
+        }
     }
 
     if(SERIAL_PARITY_EVEN == (SERIAL_PARITY_MASK & config))
     {
-        converted_config |= _0200_SAU_PARITY_EVEN;
+        if(( _urt_channel == 0 ) || ( _urt_channel == 1 ) || ( _urt_channel == 2 ))
+        {
+            converted_config |= _0200_SAU_PARITY_EVEN;
+        }
+        else
+        {
+            converted_config |= _60_UARTA_PARITY_EVEN;
+        }
     }
     else if(SERIAL_PARITY_ODD == (SERIAL_PARITY_MASK & config))
     {
-        converted_config |= _0300_SAU_PARITY_ODD;
+        if(( _urt_channel == 0 ) || ( _urt_channel == 1 ) || ( _urt_channel == 2 ))
+        {
+            converted_config |= _0300_SAU_PARITY_ODD;
+        }
+        else
+        {
+            converted_config |= _40_UARTA_PARITY_ODD;
+        }
     }
     else
     {
         /* All other settings are treated as SERIAL_PARITY_NONE(default). */
-        converted_config |= _0000_SAU_PARITY_NONE;
+        if(( _urt_channel == 0 ) || ( _urt_channel == 1 ) || ( _urt_channel == 2 ))
+        {
+            converted_config |= _0000_SAU_PARITY_NONE;
+        }
+        else
+        {
+            converted_config |= _00_UARTA_PARITY_NONE;
+        }
     }
 
     switch (_urt_channel)
@@ -1115,9 +1242,12 @@ void HardwareUart::Set_Config(uint16_t config )
         break;
         case 3:
         {
-
+#if ( UART3_CHANNEL == 3 )
+            unsigned short ASIMA01data = _02_UARTA_DIRECTION_LSB | _00_UARTA_DATA_NORMAL | converted_config;
+            ASIMA01 = (unsigned char)ASIMA01data;
+            break;
+#endif /* ( UART3_CHANNEL == 3 ) */
         }
-        break;
     }
 }
 /**********************************************************************************************************************
@@ -1134,11 +1264,6 @@ void HardwareUart::Set_Config(uint16_t config )
  *********************************************************************************************************************/
 void HardwareUart::Set_SerialPort(uint8_t txd_pin,uint8_t rxd_pin)
 {
-    //PinTableType* p;
-    //PinTableType pin_tbl;
-    //p = (PinTableType*)&pin_tbl;
-
-
     const PinTableType ** pp;
     PinTableType * p;
 
@@ -1151,33 +1276,38 @@ void HardwareUart::Set_SerialPort(uint8_t txd_pin,uint8_t rxd_pin)
 
 #if defined(G22_FPB) || defined(G23_FPB)
     /* Set PMCA Register */
-    if (0!=p->pmca){
-      *p->portModeControlARegisterAddr &= (unsigned long)~(p->pmca);
+    if (0!=p->pmca)
+    {
+        *p->portModeControlARegisterAddr &= (unsigned long)~(p->pmca);
     }
 #endif // defined(G22_FPB) || defined(G23_FPB)
 
     /* Set PMCT Register */
 #if defined(G22_FPB) || defined(G23_FPB)
-    if (0!=p->pmct){
-      *p->portModeControlTRegisterAddr &= (unsigned long)~(p->pmct);
+    if (0!=p->pmct)
+    {
+        *p->portModeControlTRegisterAddr &= (unsigned long)~(p->pmct);
     }
 #endif // defined(G22_FPB) || defined(G23_FPB)
 
     /* Set PMCE Register for Output */
 #if defined(G23_FPB)
-    if (0!=p->pmce){
-      *p->portModeControlERegisterAddr &= (unsigned long)~(p->pmce);
+    if (0!=p->pmce)
+    {
+        *p->portModeControlERegisterAddr &= (unsigned long)~(p->pmce);
     }
 #endif // G23_FPB
     /* Set CCDE Register for Digital InOut */
 #if defined(G23_FPB)
-    if (0!=p->ccde){
-      CCDE &= (uint8_t)~(p->ccde);
+    if (0!=p->ccde)
+    {
+        CCDE &= (uint8_t)~(p->ccde);
     }
 #endif // G23_FPB
 #if defined(G16_FPB)
-    if (0!=p->pmc){
-      *p->portModeControlRegisterAddr &= (unsigned long)~(p->pmc);
+    if (0!=p->pmc)
+    {
+        *p->portModeControlRegisterAddr &= (unsigned long)~(p->pmc);
     }
 #endif // defined(G16_FPB)
 
@@ -1187,8 +1317,9 @@ void HardwareUart::Set_SerialPort(uint8_t txd_pin,uint8_t rxd_pin)
     p = (PinTableType *)*pp;
     /* Set PMCE Register t */
 #if defined(G23_FPB)
-    if (0!=p->pmce){
-      *p->portModeControlERegisterAddr &= (unsigned long)~(p->pmce);
+    if (0!=p->pmce)
+    {
+        *p->portModeControlERegisterAddr &= (unsigned long)~(p->pmce);
     }
 #endif // G23_FPB
 
@@ -1200,34 +1331,39 @@ void HardwareUart::Set_SerialPort(uint8_t txd_pin,uint8_t rxd_pin)
 
     /* Set PMCA Register */
 #if defined(G22_FPB) || defined(G23_FPB)
-    if (0!=p->pmca){
-      *p->portModeControlARegisterAddr &= (unsigned long)~(p->pmca);
+    if (0!=p->pmca)
+    {
+        *p->portModeControlARegisterAddr &= (unsigned long)~(p->pmca);
     }
 #endif // defined(G22_FPB) || defined(G23_FPB)
 
     /* Set PMCT Register */
 #if defined(G22_FPB) || defined(G23_FPB)
-    if (0!=p->pmct){
-      *p->portModeControlTRegisterAddr &= (unsigned long)~(p->pmct);
+    if (0!=p->pmct)
+    {
+        *p->portModeControlTRegisterAddr &= (unsigned long)~(p->pmct);
     }
 #endif // defined(G22_FPB) || defined(G23_FPB)
 
     /* Set PMCE Register t */
 #if defined(G23_FPB)
-    if (0!=p->pmce){
-      *p->portModeControlERegisterAddr &= (unsigned long)~(p->pmce);
+    if (0!=p->pmce)
+    {
+        *p->portModeControlERegisterAddr &= (unsigned long)~(p->pmce);
     }
 #endif // G23_FPB
     /* Set CCDE Register for Digital InOut */
 #if defined(G23_FPB)
-    if (0!=p->ccde){
-      CCDE &= (uint8_t)~(p->ccde);
+    if (0!=p->ccde)
+    {
+        CCDE &= (uint8_t)~(p->ccde);
     }
 #endif // G23_FPB
 
 #if defined(G16_FPB)
-    if (0!=p->pmc){
-      *p->portModeControlRegisterAddr &= (unsigned long)~(p->pmc);
+    if (0!=p->pmc)
+    {
+        *p->portModeControlRegisterAddr &= (unsigned long)~(p->pmc);
     }
 #endif // G16_FPB
 }
@@ -1236,6 +1372,7 @@ void HardwareUart::setReceiveCallback(void (*userFunc)(void))
 {
     uart_receive_callback_table[_urt_channel] = userFunc;
 }
+
 void HardwareUart::setTransmitCallback(void (*userFunc)(void))
 {
     uart_transmit_callback_table[_urt_channel] = userFunc;
@@ -1269,6 +1406,9 @@ void Set_Char_Serial_to_buf(uint8_t chn)
 #endif /* (UART2_CHANNEL == 2) */
             break;
         case 3:
+#if (UART3_CHANNEL == 3)
+            Serial3.store_char();
+#endif /* (UART3_CHANNEL == 3) */
             break;
     }
 }
@@ -1300,6 +1440,9 @@ void Set_Char_Serial_from_buf(uint8_t chn)
 #endif /* (UART2_CHANNEL == 2) */
             break;
         case 3:
+#if (UART3_CHANNEL == 3)
+            Serial3.load_char();
+#endif /* (UART3_CHANNEL == 3) */
             break;
     }
 }
@@ -1309,7 +1452,7 @@ void Set_Char_Serial_from_buf(uint8_t chn)
 // Preinstantiate Objects //////////////////////////////////////////////////////
 
 #if ( UART_CHANNEL == 0 )
-  HardwareUart Serial(0);
+    HardwareUart Serial(0);
 #endif /* ( UART_CHANNEL == 0 ) */
 #if ( UART1_CHANNEL == 1 )
     HardwareUart Serial1(1);
@@ -1317,5 +1460,8 @@ void Set_Char_Serial_from_buf(uint8_t chn)
 #if ( UART2_CHANNEL == 2 )
     HardwareUart Serial2(2);
 #endif /* ( UART2_CHANNEL == 2 ) */
+#if ( UART3_CHANNEL == 3 )
+    HardwareUart Serial3(3);
+#endif /* ( UART3_CHANNEL == 3 ) */
 
 

@@ -91,3 +91,4 @@ class HardwareUart : public arduino::HardwareSerial
 extern HardwareUart Serial;
 extern HardwareUart Serial1;
 extern HardwareUart Serial2;
+extern HardwareUart Serial3;

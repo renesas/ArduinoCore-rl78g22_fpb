@@ -58,11 +58,13 @@ SECTIONS
 	.init :
 	{
 		KEEP(*(.init))
+		. = ALIGN(2);
 	} >ROM
 
 	.fini :
 	{
 		KEEP(*(.fini))
+		. = ALIGN(2);
 	} >ROM
 
 	PROVIDE(__rodata_limit = CONSTANT(MIRRORAREASTART)+ 0x2000 + LENGTH(MIRROR));

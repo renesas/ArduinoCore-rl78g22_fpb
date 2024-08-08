@@ -4,10 +4,6 @@
 #include "pintable.h"
 #include "r_cg_interrupt_handlers.h"
 
-extern "C" {
-// #include "Config_ITL013.h"
-}
-
 #define    ADS_TEMP_SENSOR            (0x80)
 #define    ADS_REF_VOLTAGE            (0x81)
 
@@ -205,8 +201,11 @@ uint16_t getVersion()
 {
     return RLDUINO78_VERSION;
 }
-
+#if defined(G22_FPB) || defined(G23_FPB)
 #define USE_POWER_MANAGEMENT (1) // Set 1 when issue was solved. //KAD change from 0 to 1
+#else
+#define USE_POWER_MANAGEMENT (0) // Set 1 when issue was solved.
+#endif // defined(G22_FPB) || defined(G23_FPB)
 
 #if USE_POWER_MANAGEMENT == 1
 /** @} group14 その他 */
@@ -511,7 +510,7 @@ void execCyclicHandler(void)
 }
 
 }
-
+#if defined(G22_FPB) || defined(G23_FPB)
 /**
  * MCUに内蔵されている温度センサから温度（摂氏/華氏）を取得します。
  *
@@ -551,7 +550,6 @@ int getTemperature(uint8_t u8Mode)
                 break;
             }
         }
-
      }
 
     //内部基準電圧出力で値を取得します。
@@ -586,12 +584,14 @@ int getTemperature(uint8_t u8Mode)
     else
     {
         //摂氏
-        s16Result = s32Temp / -33;
+        s16Result = s32Temp/ -33;
         s16Result += 25;
     }
     return s16Result;
 
 }
+#endif // defined(G22_FPB) || defined(G23_FPB)
+
 
 void enterPowerManagementMode(unsigned long u32ms)
 {

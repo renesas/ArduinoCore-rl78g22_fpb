@@ -14,67 +14,40 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2021, 2024 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_systeminit.c
-* Version      : 1.0.0
-* Device(s)    : R7F102GGExFB
-* Description  : This file implements system initializing function.
-* Creation Date: 
+* File Name        : r_cg_uarta_common.h
+* Version          : 1.0.20
+* Device(s)        : R7F102GGExFB
+* Description      : General header file for UARTA common peripheral.
+* Creation Date    : 
+***********************************************************************************************************************/
+
+
+#ifndef UARTA_COMMON_H
+#define UARTA_COMMON_H
+
+/***********************************************************************************************************************
+Macro definitions (Register bit)
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-Pragma directive
+Macro definitions
 ***********************************************************************************************************************/
-/* Start user code for pragma. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+Typedef definitions
+***********************************************************************************************************************/
+
+/***********************************************************************************************************************
+Global functions
+***********************************************************************************************************************/
+void R_UARTA_Create (void);
+void R_UARTA_Set_PowerOn (void);
+void R_UARTA_Set_PowerOff (void);
+/* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
+#endif
 
-/***********************************************************************************************************************
-Includes
-***********************************************************************************************************************/
-#include "r_cg_macrodriver.h"
-#include "Config_ADC.h"
-#include "Config_IICA0.h"
-#include "Config_RTC.h"
-#include "r_cg_sau_common.h"
-#include "r_cg_tau_common.h"
-#include "r_cg_itl_common.h"
-/* Start user code for include. Do not edit comment generated here */
-#include "Config_INTC.h"
-/* End user code. Do not edit comment generated here */
-#include "r_cg_userdefine.h"
-
-/***********************************************************************************************************************
-Global variables and functions
-***********************************************************************************************************************/
-/* Start user code for global. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
-
-/***********************************************************************************************************************
-* Function Name: R_Systeminit
-* Description  : This function initializes every macro
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void R_Systeminit(void)
-{
-    PRR0 = 0x7FU;    /* reset IICA, ADC, TAU and SAU module */
-    PRR1 = 0xF3U;    /* reset DAC, SMS, COMP, ITL, REMC, CTSU module */
-    PRR0 = 0x00U;    /* release IICA, ADC, TAU and SAU module */
-    PRR1 = 0x00U;    /* release DAC, SMS, COMP, ITL, REMC, CTSU module */
-    /* Set peripheral settings */
-//    R_SAU0_Create();
-//    R_ITL_Create();
-//    R_TAU0_Create();
-    SAU0EN = 1U;    /* supplies input clock */    /* R_SAU0_Create(); */
-    SAU1EN = 1U;    /* supplies input clock */    /* R_SAU1_Create(); */
-    TAU0EN = 1U;    /* start TAU0 clock */        /* R_TAU0_Create(); */
-    TML32EN = 1U;    /* start 32-bits IT clock */ /* R_ITL_Create();  */
-    UTAEN = 1U;    /* start UARTA clock */ /* R_Config_UARTA1_Create();  */
-    R_Config_ADC_Create();
-
-    /* The RTC initializes when using the function. */
-    R_Config_RTC_Create();
-}

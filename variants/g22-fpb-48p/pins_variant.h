@@ -30,7 +30,7 @@
 #include <stdlib.h>
 
 #ifndef configCPU_CLOCK_HZ
-#define configCPU_CLOCK_HZ 					(32000000)	//!< CPU�̓�����g���iRTOS���g�p���ɒ�`�j
+#define configCPU_CLOCK_HZ 					(32000000)	//!< CPUの動作周波数（RTOS未使用時に定義）
 #endif
 
 #define F_CPU (32 * 1000 * 1000L)
@@ -41,7 +41,8 @@
 #define UART_CHANNEL 		0		// UART0(Serial0)
 #define UART1_CHANNEL       1       // UART1(Serial1)
 #define UART2_CHANNEL       2       // UART2(Serial2)
-
+#define UART3_CHANNEL       3       // UARTA1(Serial3)
+#define UART_TOTAL_NUM 4
 /* SPI(CSI) Definition */
 #define USE_CSI      (1) // Set to '1' when Use SPI Hardware.
 
@@ -67,12 +68,12 @@
     (p) == 27 || /* P21(AVREFM) */\
     (p) == 35    /* P20(AVREFP) */)
 #define CHECK_OUTPUT_INHIBIT_RL78(p) (\
-	(p) == 8 ||  /* P30(TSCAP) */\
-	(p) == 26 || /* P22(Touch Slider) */\
-	(p) == A2 || /* P26(Touch Slider) */\
-	(p) == A3 || /* P25(Touch Slider) */\
-	(p) == A4 || /* P24(Touch Slider) */\
-	(p) == A5    /* P23(Touch Slider) */)
+    (p) == 8 ||  /* P30(TSCAP) */\
+    (p) == 26 || /* P22(Touch Slider) */\
+    (p) == A2 || /* P26(Touch Slider) */\
+    (p) == A3 || /* P25(Touch Slider) */\
+    (p) == A4 || /* P24(Touch Slider) */\
+    (p) == A5    /* P23(Touch Slider) */)
 
 // 2023/03/02 end of copy from Arduino.h
 
@@ -107,9 +108,9 @@ int8_t get_tone_channel(uint8_t tone_num);
 
 typedef struct {
     void (*open)();
-	void (*start)();
-	void (*stop)();
-	void (*get_width)(uint32_t * const width);
+    void (*start)();
+    void (*stop)();
+    void (*get_width)(uint32_t * const width);
 } pulse_in_func;
 
 
@@ -664,6 +665,9 @@ extern const uint8_t A9;
 
 #define SERIAL_TXD2			11 // P13
 #define SERIAL_RXD2			12 // P14
+// 20240617
+#define SERIAL_TXD3			19 // P72 TxDA0
+#define SERIAL_RXD3			17 // P71 RxDA0
 /* Define Serial Port Number */
 
 #endif // # _PINS_VARIANT_H_

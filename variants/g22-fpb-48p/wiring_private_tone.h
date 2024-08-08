@@ -38,12 +38,12 @@ extern "C"{
 
 #define TONE_CH_NUM				(7)
 
-#define TAU_OPERATION_CLOCK		(0xC000U)    /* operation clock set by PRS register */
-#define CK00_CK01_OPERATION		(0x000F)	/* Selection of operation clock CK00, CK01 */
-#define CK02_OPERATION			(0x0300)	/* Selection of operation clock CK02 */
-#define CK03_OPERATION			(0x3000)	/* Selection of operation clock CK03 */
-#define TIMEOUT_MAX_VAL			(65535)
-#define PULSE_INTERUPT			(1)
+// #define TAU_OPERATION_CLOCK		(0xC000U)    /* operation clock set by PRS register */
+// #define CK00_CK01_OPERATION		(0x000F)	/* Selection of operation clock CK00, CK01 */
+// #define CK02_OPERATION			(0x0300)	/* Selection of operation clock CK02 */
+// #define CK03_OPERATION			(0x3000)	/* Selection of operation clock CK03 */
+// #define TIMEOUT_MAX_VAL			(65535)
+// #define PULSE_INTERUPT			(1)
 
 #define _4000_TAU_CLOCK_SELECT_CKM2       (0x4000U)    /* operation clock CK2 set by PRS register */
 #define _0000_TAU_CKM2_FCLK_1             (0x0000U)    /* ckm2 - fCLK/2^1 */

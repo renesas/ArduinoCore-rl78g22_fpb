@@ -248,12 +248,14 @@ void INT_CTSUFN(void) __attribute__ ((interrupt));
 /*
  * INT_UT0 (0x6A)
  */
-void INT_UT0(void) __attribute__ ((interrupt));
+// 20240628 polling/ interrupt
+void r_Config_UARTA0_interrupt_send (void) __attribute__ ((interrupt));
+// void INT_UT0 (void) __attribute__ ((interrupt));
 
 /*
  * INT_UR0 (0x6C)
  */
-void INT_UR0(void) __attribute__ ((interrupt));
+void r_Config_UARTA0_interrupt_receive (void) __attribute__ ((interrupt));
 
 /*
  * INT_BRK_I (0x7E)

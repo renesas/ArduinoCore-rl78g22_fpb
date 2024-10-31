@@ -42,9 +42,6 @@ Macro definitions (Register bit)
 /*
     Operation Mode Setting Register 0 (ASIMAn0)
 */
-/* UART operation enable (UARTAENn) */
-#define _00_UARTA_OPERATION_DISABLE        (0x00U)    /* disables the UART operation clock */
-#define _80_UARTA_OPERATION_ENABLE         (0x80U)    /* enables the UART operation clock */
 /* Transmission enable (TXEAn) */
 #define _00_UARTA_TRANSMIT_DISABLE         (0x00U)    /* disables transmission */
 #define _40_UARTA_TRANSMIT_ENABLE          (0x40U)    /* enables transmission */
@@ -116,6 +113,9 @@ Macro definitions (Register bit)
 /*
     UARTA Clock Select Register 0 (UTA0CK)
 */
+/* UARTA0 clock output function enable (UTA0OEN) */
+#define _00_UARTA_CLKA0_OUTPUT_DISABLE     (0x00U)    /* pin CLKA0 output is disable */
+#define _80_UARTA_CLKA0_OUTPUT_ENABLE      (0x80U)    /* pin CLKA0 output is enable */
 /* fSEL clock select (UTASEL1, UTASEL0) */
 #define _00_UARTA_FSEL_DISABLE             (0x00U)    /* stop */
 #define _10_UARTA_FSEL_SELECT_FMXP         (0x10U)    /* fMXP */

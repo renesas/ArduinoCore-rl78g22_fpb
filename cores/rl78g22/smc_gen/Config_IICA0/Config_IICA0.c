@@ -227,7 +227,7 @@ MD_STATUS R_Config_IICA0_Master_Receive(uint8_t adr, uint8_t * const rx_buf, uin
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-double coeffL, coeffH;
+
 /**********************************************************************************************************************
  * Function Name: R_Config_IICA0_Master_SetClock
  * Description  : This function sets I2C clock frequency
@@ -246,26 +246,14 @@ void R_Config_IICA0_Master_SetClock(uint32_t clock) {
         return;
     }
 
-//    double coeffL, coeffH;
+    double coeffL, coeffH;
 #if !defined(DISABLE_CLOCK_FAST_PLUS)
     if      ( clock >= I2C_CLOCK_FAST_PLUS ) { clock = I2C_CLOCK_FAST_PLUS; coeffL = 0.50; coeffH = 0.50; }
     else
 #endif /* !defined(DISABLE_CLOCK_FAST_PLUS) */
-//    if      ( clock >= I2C_CLOCK_FAST      ) { clock = I2C_CLOCK_FAST     ; coeffL = 0.52; coeffH = 0.48; }
-//    else                                     { clock = I2C_CLOCK_STANDARD ; coeffL = 0.47; coeffH = 0.53; }
+    if      ( clock >= I2C_CLOCK_FAST      ) { clock = I2C_CLOCK_FAST     ; coeffL = 0.52; coeffH = 0.48; }
+    else                                     { clock = I2C_CLOCK_STANDARD ; coeffL = 0.47; coeffH = 0.53; }
 
-    if      ( clock >= I2C_CLOCK_FAST      )
-    {
-//    	clock = I2C_CLOCK_FAST     ;
-    	coeffL = 0.52;
-    	coeffH = 0.48;
-    }
-    else
-    {
-//    	clock = I2C_CLOCK_STANDARD ;
-    	coeffL = 0.47;
-    	coeffH = 0.53;
-    }
     /*
      * XXX:
      * Register access code is copied from `R_Config_IICA0_Create()`.

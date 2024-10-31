@@ -1,21 +1,3 @@
-/*
-  Copyright (c) 2014-2015 Arduino LLC.  All right reserved.
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the GNU Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-
 #include "pins_variant.h"
 #include "wiring_private.h"
 #include "wiring_private_tone.h"
@@ -30,14 +12,15 @@ const uint8_t MOSI = PIN_SPI_MOSI;
 const uint8_t MISO = PIN_SPI_MISO;
 const uint8_t SCK  = PIN_SPI_SCK;
 
+const uint8_t SDA  = PIN_WIRE_SDA;
+const uint8_t SCL  = PIN_WIRE_SCL;
+
 const uint8_t A0 = PIN_A0;
 const uint8_t A1 = PIN_A1;
 const uint8_t A2 = PIN_A2;
 const uint8_t A3 = PIN_A3;
 const uint8_t A4 = PIN_A4;
 const uint8_t A5 = PIN_A5;
-const uint8_t A6 = PIN_A6;
-const uint8_t A7 = PIN_A7;
 
 // 2023/02/24 moved from wiring_tone.cpp
 /* tone pin set */

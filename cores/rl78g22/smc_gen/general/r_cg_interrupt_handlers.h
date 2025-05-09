@@ -141,7 +141,7 @@ void r_Config_IICA0_interrupt(void) __attribute__ ((interrupt));
  * INT_CSI01/INT_IIC01/INT_SR0 (0x2C)
  */
 void INT_SR0(void) __attribute__ ((interrupt));
-void r_Config_UART0_interrupt_receive(void) __attribute__ ((interrupt));
+void r_Config_IIC01_UART0_interrupt_switching(void) __attribute__ ((interrupt));
 
 /*
  * INT_TM01 (0x2E)

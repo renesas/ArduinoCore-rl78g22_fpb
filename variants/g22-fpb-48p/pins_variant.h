@@ -36,7 +36,7 @@
 
 /* IIC Definition */
 #define IIC_CHANNEL0 (0)
-#define IIC_CHANNEL1 (0)
+#define IIC_CHANNEL1 (1)
 
 #define CHECK_PINMODE_INHIBIT_RL78(p) (\
     (p) == 27 || /* P21(AVREFM) */\

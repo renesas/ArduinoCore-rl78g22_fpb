@@ -199,11 +199,13 @@ INT_WDTI,
  * INT_CSI01/INT_IIC01/INT_SR0 (0x2C)
  */
 //    INT_SR0,
+
+
 #if defined(CSI_CHANNEL1)
     INT_CSI01,
 #else
-    #if defined(UART_CHANNEL) & (UART_CHANNEL==0)
-        r_Config_UART0_interrupt_receive,
+#if defined(IIC_CHANNEL1) && (IIC_CHANNEL1 == 1) || defined(UART_CHANNEL) && (UART_CHANNEL == 0)
+	r_Config_IIC01_UART0_interrupt_switching,
     #else
         INT_SR0,
     #endif

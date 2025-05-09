@@ -13,11 +13,11 @@ extern "C" {
 #endif  /* defined(IIC_CHANNEL0) && IIC_CHANNEL0 == 0 */
 
 #if     defined(IIC_CHANNEL1) && IIC_CHANNEL1 == 1
-  #include "Config_IICA1.h"
-  extern volatile uint16_t g_iica1_rx_len;
-  extern volatile uint16_t g_iica1_rx_cnt;
-  extern volatile uint16_t g_iica1_tx_cnt;
-  extern volatile uint8_t  g_iica1_master_status_flag;
+  #include "Config_IIC01.h"
+  extern volatile uint16_t g_iic01_rx_len;
+  extern volatile uint16_t g_iic01_rx_cnt;
+  extern volatile uint16_t g_iic01_tx_cnt;
+  extern volatile uint8_t  g_iica01_master_status_flag;
 #endif  /* defined(IIC_CHANNEL1) && IIC_CHANNEL1 == 1 */
 
 }
@@ -37,17 +37,17 @@ IICA_Impl::IICA_Impl(uint8_t ch) {
 
 #if     defined(IIC_CHANNEL1) && IIC_CHANNEL1 == 1
   case 1:
-    Master_Create_          = R_Config_IICA1_Create;
-    Master_Stop_            = R_Config_IICA1_Stop;
-    Master_StopCondition_   = R_Config_IICA1_StopCondition;
-    Master_Create_UserInit_ = R_Config_IICA1_Create_UserInit;
-    Master_Send_            = R_Config_IICA1_Master_Send;
-    Master_Receive_         = R_Config_IICA1_Master_Receive;
-    Master_SetClock_        = R_Config_IICA1_Master_SetClock;
-    rx_len                  = &g_iica1_rx_len;
-    rx_cnt                  = &g_iica1_rx_cnt;
-    tx_cnt                  = &g_iica1_tx_cnt;
-    master_status_flag      = &g_iica1_master_status_flag;
+    Master_Create_          = R_Config_IIC01_Create;
+    Master_Stop_            = R_Config_IIC01_Stop;
+    Master_StopCondition_   = R_Config_IIC01_StopCondition;
+    Master_Create_UserInit_ = R_Config_IIC01_Create_UserInit;
+    Master_Send_            = R_Config_IIC01_Master_Send;
+    Master_Receive_         = R_Config_IIC01_Master_Receive;
+    Master_SetClock_        = R_Config_IIC01_Master_SetClock;
+    rx_len                  = &g_iic01_rx_len;
+    rx_cnt                  = &g_iic01_rx_cnt;
+    tx_cnt                  = &g_iic01_tx_cnt;
+    master_status_flag      = &g_iica01_master_status_flag;
     break;
 #endif  /* defined(IIC_CHANNEL1) && IIC_CHANNEL1 == 1 */
 

@@ -40,6 +40,7 @@ Includes
 #include "Config_UART2.h"
 // #include "Config_CSI11.h"
 #include "Config_CSI20.h"
+#include "Config_IIC01.h"
 #include "r_cg_sau_common.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
@@ -51,6 +52,8 @@ Global variables and functions
 /* Start user code for global. Do not edit comment generated here */
 extern void r_Config_CSI20_interrupt();
 extern void r_Config_UART2_interrupt_send();
+extern void r_Config_UART0_interrupt_receive();
+extern void r_Config_IIC01_interrupt();
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -231,6 +234,24 @@ void r_Config_CSI20_UART2_interrupt_send(void) {
     }
 #endif
 
+}
+
+void r_Config_IIC01_UART0_interrupt_switching(void) {
+#if defined(UART_CHANNEL) && (UART_CHANNEL == 0)
+    /* Check bit [2:1] of register SMR01 == 01 , which is set in R_Config_UART0_Create(). */
+    if ((SMR01 & 0x0007) == _0002_SAU_MODE_UART) {
+        r_Config_UART0_interrupt_receive();
+        return;
+    }
+#endif
+
+#if defined(IIC_CHANNEL1) && (IIC_CHANNEL1 == 1)
+    /* Check bit [2:1] of register SMR01 == 10 , which is set in R_Config_IIC01_Create(). */
+    if ((SMR01 & 0x0007) == _0004_SAU_MODE_IIC) {
+        r_Config_IIC01_interrupt();
+        return;
+    }
+#endif
 }
 
 /* End user code. Do not edit comment generated here */

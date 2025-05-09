@@ -151,7 +151,6 @@ size_t TwoWire::requestFrom(uint8_t address, size_t quantity, bool sendStop)
 
   /* perform blocking read into buffer */
   uint8_t read = iica.Master_Receive(address, rxBuffer, quantity, static_cast<bool>(sendStop));
-
   /* set rx buffer iterator vars */
   rxBufferIndex = 0;
   rxBufferLength = read;

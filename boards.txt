@@ -18,7 +18,7 @@ g22-fpb-48p.bootloader.unlock_bits=
 g22-fpb-48p.bootloader.lock_bits=
 g22-fpb-48p.bootloader.file=
 
-g22-fpb-48p.build.mcu=rl78
+g22-fpb-48p.build.mcu=R7F102GGE
 g22-fpb-48p.build.f_cpu=32000000L
 g22-fpb-48p.build.board=RL78G22_FPB
 g22-fpb-48p.build.core=rl78g22

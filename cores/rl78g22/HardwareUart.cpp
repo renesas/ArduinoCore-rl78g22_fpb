@@ -12,7 +12,7 @@ extern "C" {
 
 extern "C" {
     #include "pintable.h"
-    extern const PinTableType * pinTablelist[NUM_DIGITAL_PINS];
+    extern const PinTableType * const pinTablelist[NUM_DIGITAL_PINS];
     #include "pins_variant.h"
 }
 
@@ -338,6 +338,8 @@ void serialEventRun(void)
 fInterruptFunc_t uart_receive_callback_table[UART_TOTAL_NUM] __attribute__((weak));
 fInterruptFunc_t uart_transmit_callback_table[UART_TOTAL_NUM] __attribute__((weak));
 
+HardwareUart * phardwareserial[UART_TOTAL_NUM];
+
 // Constructors ////////////////////////////////////////////////////////////////
 
 /**********************************************************************************************************************
@@ -453,6 +455,7 @@ void HardwareUart::begin(unsigned long baud, uint16_t config, int rx_buf, int tx
     {
         case 0:
 #if (UART_CHANNEL==0)
+        	phardwareserial[0] = this;
             R_Config_UART0_Create();
             Set_Baudrate(baud);
             Set_SerialPort(SERIAL_TXD0,SERIAL_RXD0);
@@ -463,6 +466,7 @@ void HardwareUart::begin(unsigned long baud, uint16_t config, int rx_buf, int tx
             break;
         case 1:
 #if (UART1_CHANNEL==1)
+        	phardwareserial[1] = this;
             R_Config_UART1_Create();
             Set_Baudrate(baud);
             Set_SerialPort(SERIAL_TXD1,SERIAL_RXD1);
@@ -473,6 +477,7 @@ void HardwareUart::begin(unsigned long baud, uint16_t config, int rx_buf, int tx
             break;
         case 2:
 #if (UART2_CHANNEL==2)
+        	phardwareserial[2] = this;
             R_Config_UART2_Create();
             Set_Baudrate(baud);
             Set_SerialPort(SERIAL_TXD2,SERIAL_RXD2);
@@ -483,6 +488,7 @@ void HardwareUart::begin(unsigned long baud, uint16_t config, int rx_buf, int tx
             break;
         case 3:
 #if (UART3_CHANNEL==3)
+        	phardwareserial[3] = this;
             R_Config_UARTA0_Create();
             Set_Baudrate(baud);
             Set_SerialPort(SERIAL_TXD3,SERIAL_RXD3);
@@ -510,21 +516,25 @@ void HardwareUart::end()
     case 0:
 #if (UART_CHANNEL == 0 )
         R_Config_UART0_Stop();
+        phardwareserial[0] = NULL;
 #endif /* (UART_CHANNEL == 0 ) */
         break;
     case 1:
 #if (UART1_CHANNEL == 1 )
         R_Config_UART1_Stop();
+        phardwareserial[1] = NULL;
 #endif /* (UART1_CHANNEL == 1 ) */
         break;
     case 2:
 #if (UART2_CHANNEL == 2 )
         R_Config_UART2_Stop();
+        phardwareserial[2] = NULL;
 #endif /* (UART2_CHANNEL == 2 ) */
         break;
     case 3:
 #if (UART3_CHANNEL == 3 )
             R_Config_UARTA0_Stop();
+            phardwareserial[3] = NULL;
 #endif /* (UART3_CHANNEL == 3 ) */
         break;
     }
@@ -677,6 +687,7 @@ size_t HardwareUart::UART_Send(uint8_t c)
     int i;
     uint8_t isp;
     size_t ret = 0;
+    volatile int * ptail;
 
     /* buffer is none */
     if (0 == _tx_buf_size)
@@ -684,6 +695,7 @@ size_t HardwareUart::UART_Send(uint8_t c)
         return ret;
     }
 
+    ptail = &_tx_buffer_tail;
     isp = (uint8_t)GET_PSW_ISP();
 
     noInterrupts();
@@ -745,7 +757,7 @@ size_t HardwareUart::UART_Send(uint8_t c)
             {
                 /* When called from main program(setup() or loop() */
                 interrupts();
-                while(i == _tx_buffer_tail)
+                while(i == *ptail)
                 {
                     ;
                 }
@@ -1239,7 +1251,7 @@ void HardwareUart::Set_SerialPort(uint8_t txd_pin,uint8_t rxd_pin)
 
     /* Set RxD pin */
     //getPinTable(rxd_pin,p);
-    pp = &pinTablelist[rxd_pin];
+    pp = (const PinTableType **)&pinTablelist[rxd_pin];
     p = (PinTableType *)*pp;
     /* Set PM Register for Input */
     *p->portModeRegisterAddr |=  (unsigned long)(0x1 << p->bit);
@@ -1283,7 +1295,7 @@ void HardwareUart::Set_SerialPort(uint8_t txd_pin,uint8_t rxd_pin)
 
     /* Set TxD pin */
     //getPinTable(txd_pin,p);
-    pp = &pinTablelist[txd_pin];
+    pp = (const PinTableType **)&pinTablelist[txd_pin];
     p = (PinTableType *)*pp;
     /* Set PMCE Register t */
 #if defined(G23_FPB)
@@ -1362,22 +1374,34 @@ void Set_Char_Serial_to_buf(uint8_t chn)
     {
         case 0:
 #if (UART_CHANNEL == 0)
-            Serial.store_char();
+            if(phardwareserial[0] != NULL)
+            {
+                phardwareserial[0]->store_char();
+            }
 #endif /* (UART_CHANNEL == 0) */
             break;
         case 1:
 #if (UART1_CHANNEL == 1)
-            Serial1.store_char();
+            if(phardwareserial[1] != NULL)
+            {
+                phardwareserial[1]->store_char();
+            }
 #endif /* (UART1_CHANNEL == 1) */
             break;
         case 2:
 #if (UART2_CHANNEL == 2)
-            Serial2.store_char();
+            if(phardwareserial[2] != NULL)
+            {
+                phardwareserial[2]->store_char();
+            }
 #endif /* (UART2_CHANNEL == 2) */
             break;
         case 3:
 #if (UART3_CHANNEL == 3)
-            Serial3.store_char();
+            if(phardwareserial[3] != NULL)
+            {
+                phardwareserial[3]->store_char();
+            }
 #endif /* (UART3_CHANNEL == 3) */
             break;
     }
@@ -1396,22 +1420,34 @@ void Set_Char_Serial_from_buf(uint8_t chn)
     {
         case 0:
 #if (UART_CHANNEL == 0)
-            Serial.load_char();
+            if(phardwareserial[0] != NULL)
+            {
+                phardwareserial[0]->load_char();
+            }
 #endif /* (UART_CHANNEL == 0) */
             break;
         case 1:
 #if (UART1_CHANNEL == 1)
-            Serial1.load_char();
+            if(phardwareserial[1] != NULL)
+            {
+                phardwareserial[1]->load_char();
+            }
 #endif /* (UART1_CHANNEL == 1) */
             break;
         case 2:
 #if (UART2_CHANNEL == 2)
-            Serial2.load_char();
+            if(phardwareserial[2] != NULL)
+            {
+                phardwareserial[2]->load_char();
+            }
 #endif /* (UART2_CHANNEL == 2) */
             break;
         case 3:
 #if (UART3_CHANNEL == 3)
-            Serial3.load_char();
+            if(phardwareserial[3] != NULL)
+            {
+                phardwareserial[3]->load_char();
+            }
 #endif /* (UART3_CHANNEL == 3) */
             break;
     }

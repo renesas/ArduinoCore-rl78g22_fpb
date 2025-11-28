@@ -2,17 +2,19 @@
 #define Arduino_h
 
 #include "api/ArduinoAPI.h"
+#include "api/deprecated-avr-comp/avr/dtostrf.h"
 #include <stdbool.h>
 #include "utilities.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 #include "r_cg_macrodriver.h"
+#include "pintable.h"
+#include "pins_variant.h"
+
 #ifdef __cplusplus
 }
 #endif
-#include "pintable.h"
-#include "pins_variant.h"
 
 #define RLDUINO78_VERSION 0x0203
 #define INTERRUPT
@@ -20,10 +22,23 @@ extern "C" {
 #define _HALT()		asm("halt;");
 #define _STOP()		asm("stop;");
 
-#define clockCyclesPerMicrosecond()			(configCPU_CLOCK_HZ / 1000000)				//!< CPUの動作周波数を1000000で割ったもの
-#define clockCyclesToMicroseconds(cycle)	((cycle) / clockCyclesPerMicrosecond())		//!< サイクルあたりの時間[us]
-#define microsecondsToClockCycles(us)		((us) * clockCyclesPerMicrosecond())		//!< 時間当たりのサイクル数
+// Get the bit location within the hardware port of the given virtual pin.
+// This comes from the pins_*.c file for the active board configuration.
+//
+// These perform slightly better as macros compared to inline functions
+//
+#define NOT_A_PIN 255
+#define NOT_A_PORT NULL
 
+#define clockCyclesPerMicrosecond()         (configCPU_CLOCK_HZ / 1000000)              //!< CPUの動作周波数を1000000で割ったもの
+#define clockCyclesToMicroseconds(cycle)    ((cycle) / clockCyclesPerMicrosecond())     //!< サイクルあたりの時間[us]
+#define microsecondsToClockCycles(us)       ((us) * clockCyclesPerMicrosecond())        //!< 時間当たりのサイクル数
+
+#define digitalPinToPort(P)         (uint8_t)( ((uint8_t)P < NUM_DIGITAL_PINS) ? pinTablelist[P]->portRegisterAddr - getPortRegisterAddr(0) : NOT_A_PIN)
+#define digitalPinToBitMask(P)      (uint8_t)( ((uint8_t)P < NUM_DIGITAL_PINS) ? pinTablelist[P]->mask : NOT_A_PIN)
+#define portOutputRegister(port)    (uint8_t *)( EXIST_PORT_REGISTER(port) ? getPortRegisterAddr(port) : NOT_A_PORT) /* 0:Low 1:High */
+#define portInputRegister(port)     (uint8_t *)( EXIST_PORT_REGISTER(port) ? getPortRegisterAddr(port) : NOT_A_PORT) /* 0:Low 1:High */
+#define portModeRegister(port)      (uint8_t *)( EXIST_PORT_MODE_REGISTER(port) ? getPortModeRegisterAddr(port) : NOT_A_PORT) /* 0:Output 1:Input */
 
 #define HOOK_TIMER_CHANNEL  7
 

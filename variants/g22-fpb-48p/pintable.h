@@ -35,6 +35,8 @@ typedef struct {
 	volatile uint8_t* portModeControlTRegisterAddr;
 } PinTableType;
 
+extern const PinTableType * const pinTablelist[];
+
 #ifdef __cplusplus
 };
 #endif

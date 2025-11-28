@@ -105,6 +105,10 @@ void R_Config_TAU0_2_Square_Wave_Stop(void)
 {
     TT0 |= _0004_TAU_CH2_STOP_TRG_ON;
     TOE0 &= (uint16_t)~_0004_TAU_CH2_OUTPUT_ENABLE;
+
+    /* Output Low */
+    P1 &= 0x7FU;
+    TO0 &= (uint16_t)~_0004_TAU_CH2_OUTPUT_VALUE_1;
     /* Mask channel 2 interrupt */
 //    TMMK02 = 1U;    /* disable INTTM02 interrupt */
 //    TMIF02 = 0U;    /* clear INTTM02 interrupt flag */
